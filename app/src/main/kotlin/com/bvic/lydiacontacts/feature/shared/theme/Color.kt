@@ -1,4 +1,4 @@
-package com.bvic.lydiacontacts.ui.theme
+package com.bvic.lydiacontacts.feature.shared.theme
 
 import androidx.compose.ui.graphics.Color
 

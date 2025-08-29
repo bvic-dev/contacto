@@ -25,7 +25,7 @@ object NetworkInjector {
         val builder = OkHttpClient.Builder()
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(
-                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY),
+                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS),
             )
         }
         return builder.build()

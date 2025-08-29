@@ -1,5 +1,6 @@
 package com.bvic.lydiacontacts.di
 
+import com.bvic.lydiacontacts.data.local.dao.RandomUserDao
 import com.bvic.lydiacontacts.data.remote.api.RandomUserApi
 import com.bvic.lydiacontacts.data.repository.RandomUserRepositoryImpl
 import com.bvic.lydiacontacts.domain.repository.RandomUserRepository
@@ -14,8 +15,12 @@ import javax.inject.Singleton
 object RepositoryInjector {
     @Provides
     @Singleton
-    fun provideRandomUserRepository(randomUserApi: RandomUserApi): RandomUserRepository =
+    fun provideRandomUserRepository(
+        randomUserApi: RandomUserApi,
+        randomUserDao: RandomUserDao,
+    ): RandomUserRepository =
         RandomUserRepositoryImpl(
             randomUserApi = randomUserApi,
+            randomUserDao = randomUserDao,
         )
 }

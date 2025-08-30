@@ -1,4 +1,4 @@
-package com.bvic.lydiacontacts.feature.contacts
+package com.bvic.lydiacontacts.ui.contacts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

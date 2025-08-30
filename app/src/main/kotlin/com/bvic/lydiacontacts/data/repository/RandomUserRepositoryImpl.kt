@@ -32,7 +32,7 @@ class RandomUserRepositoryImpl(
                     randomUserApi.getRandomUsers(page = page, results = pageSize)
                 },
                 saveNetworkResult = {
-                    val entities = it.results?.map { dto -> dto.toEntity(page) }
+                    val entities = it?.results?.map { dto -> dto.toEntity(page) }
                     if (entities.isNullOrEmpty()) return@makeCache
                     randomUserDao.insertAll(entities)
                 },

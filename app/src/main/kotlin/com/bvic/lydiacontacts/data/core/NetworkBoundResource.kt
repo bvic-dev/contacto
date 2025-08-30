@@ -20,7 +20,7 @@ abstract class NetworkBoundResource<Local, Remote, Out> {
 
     protected abstract suspend fun fetchFromNetwork(): Response<Remote>
 
-    protected abstract suspend fun saveNetworkResult(data: Remote)
+    protected abstract suspend fun saveNetworkResult(data: Remote?)
 
     protected abstract fun mapToOutput(data: Local): Out
 
@@ -35,17 +35,15 @@ abstract class NetworkBoundResource<Local, Remote, Out> {
                         saveNetworkResult(it)
                         val newData = loadFromDb()
                         emit(Result.Success(mapToOutput(newData)))
-                        return@flow
                     }.onError {
                         emit(Result.Error(it))
-                        return@flow
                     }
             } else {
                 emit(Result.Success(mapToOutput(localData)))
             }
         }.flowOn(Dispatchers.IO)
 
-    private suspend fun executeNetworkCall(call: suspend () -> Response<Remote>): Result<Remote, NetworkError> =
+    private suspend fun executeNetworkCall(call: suspend () -> Response<Remote>): Result<Remote?, NetworkError> =
         try {
             val response = call()
             handleResponse(response)
@@ -53,14 +51,10 @@ abstract class NetworkBoundResource<Local, Remote, Out> {
             handleException(t)
         }
 
-    private fun handleResponse(response: Response<Remote>): Result<Remote, NetworkError> =
+    private fun handleResponse(response: Response<Remote>): Result<Remote?, NetworkError> =
         if (response.isSuccessful) {
             val body = response.body()
-            if (body != null) {
-                Result.Success(body)
-            } else {
-                Result.Error(NetworkError.NotFound)
-            }
+            Result.Success(body)
         } else {
             val error =
                 when (response.code()) {
@@ -88,7 +82,7 @@ abstract class NetworkBoundResource<Local, Remote, Out> {
             crossinline loadFromDb: suspend () -> Local,
             crossinline shouldFetch: (Local) -> Boolean,
             crossinline fetchFromNetwork: suspend () -> Response<Remote>,
-            crossinline saveNetworkResult: suspend (Remote) -> Unit,
+            crossinline saveNetworkResult: suspend (Remote?) -> Unit,
             crossinline mapToOutput: (Local) -> Out,
         ) = object : NetworkBoundResource<Local, Remote, Out>() {
             override suspend fun loadFromDb(): Local = loadFromDb()
@@ -97,7 +91,7 @@ abstract class NetworkBoundResource<Local, Remote, Out> {
 
             override suspend fun fetchFromNetwork(): Response<Remote> = fetchFromNetwork()
 
-            override suspend fun saveNetworkResult(data: Remote) = saveNetworkResult(data)
+            override suspend fun saveNetworkResult(data: Remote?) = saveNetworkResult(data)
 
             override fun mapToOutput(data: Local): Out = mapToOutput(data)
         }

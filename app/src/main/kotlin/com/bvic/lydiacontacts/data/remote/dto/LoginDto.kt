@@ -16,5 +16,5 @@ data class LoginDto(
     @SerializedName("username")
     val username: String?,
     @SerializedName("uuid")
-    val uuid: String?,
+    val uuid: String,
 )

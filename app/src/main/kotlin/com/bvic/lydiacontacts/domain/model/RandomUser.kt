@@ -5,5 +5,5 @@ data class RandomUser(
     val fullName: String,
     val email: String?,
     val phone: String?,
-    val pictureUrl: String?,
+    val pictureThumbnailUrl: String?,
 )

@@ -16,7 +16,7 @@ data class RandomUserDto(
     @SerializedName("location")
     val location: LocationDto?,
     @SerializedName("login")
-    val login: LoginDto?,
+    val login: LoginDto,
     @SerializedName("name")
     val name: NameDto?,
     @SerializedName("nat")

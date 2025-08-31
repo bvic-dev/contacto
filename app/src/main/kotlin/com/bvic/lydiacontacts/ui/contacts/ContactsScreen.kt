@@ -112,7 +112,12 @@ fun ContactsScreen(
                 items = contacts,
                 key = { randomUser -> randomUser.id },
             ) { randomUser ->
-                ContactRow(name = randomUser.fullName, email = randomUser.email, onClick = {})
+                ContactRow(
+                    name = randomUser.fullName,
+                    email = randomUser.email,
+                    pictureThumbnailUrl = randomUser.pictureThumbnailUrl,
+                    onClick = {},
+                )
             }
 
             if (showPaginationShimmers) {
@@ -133,7 +138,7 @@ private fun fakeUsers(count: Int = 10): List<RandomUser> =
             fullName = "Utilisateur $idx",
             email = "user$idx@mail.com",
             phone = "01 23 45 67 89",
-            pictureUrl = null,
+            pictureThumbnailUrl = null,
         )
     }
 
@@ -145,7 +150,7 @@ private fun fakeUsers(count: Int = 10): List<RandomUser> =
 private fun PreviewContactScreenLoadingFirstPage() {
     LydiaContactsTheme {
         ContactsScreen(
-            contacts = emptyList<RandomUser>(),
+            contacts = emptyList(),
             contactListState = rememberLazyListState(),
             isScrollEnabled = false,
             showInitialShimmers = true,

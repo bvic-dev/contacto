@@ -14,14 +14,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.SubcomposeAsyncImage
 import com.bvic.lydiacontacts.ui.shared.extension.shimmerBackground
 import com.bvic.lydiacontacts.ui.shared.theme.LydiaContactsTheme
 
@@ -29,6 +32,7 @@ import com.bvic.lydiacontacts.ui.shared.theme.LydiaContactsTheme
 fun ContactRow(
     name: String,
     email: String?,
+    pictureThumbnailUrl: String?,
     onClick: () -> Unit,
 ) {
     Row(
@@ -39,24 +43,28 @@ fun ContactRow(
                 .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(
+        SubcomposeAsyncImage(
+            model = pictureThumbnailUrl,
+            contentDescription = null,
             modifier =
                 Modifier
                     .size(48.dp)
-                    .background(MaterialTheme.colorScheme.primary, CircleShape),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = name.firstOrNull()?.toString() ?: "?",
-                color = Color.White,
-                style = MaterialTheme.typography.titleMedium,
-            )
-        }
+                    .clip(CircleShape),
+            loading = {
+                CircularProgressIndicator()
+            },
+            error = {
+                EmptyPicture(name)
+            },
+        )
 
         Spacer(Modifier.width(16.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(name, style = MaterialTheme.typography.titleMedium)
+            Text(
+                name.ifBlank { "Indéfinie" },
+                style = MaterialTheme.typography.titleMedium,
+            )
             email?.let {
                 Text(
                     it,
@@ -65,6 +73,26 @@ fun ContactRow(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun EmptyPicture(name: String) {
+    Box(
+        modifier =
+            Modifier
+                .size(48.dp)
+                .background(
+                    MaterialTheme.colorScheme.primary,
+                    CircleShape,
+                ),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = name.firstOrNull()?.toString() ?: "?",
+            color = Color.White,
+            style = MaterialTheme.typography.titleMedium,
+        )
     }
 }
 
@@ -115,13 +143,22 @@ fun ContactRowShimmer() {
     uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
-fun PreviewContactRow() {
+private fun PreviewContactRow() {
     LydiaContactsTheme {
-        ContactRow(
-            name = "Alex Martin",
-            email = "alex.martin@example.com",
-            onClick = {},
-        )
+        Column {
+            ContactRow(
+                name = "Alex Martin",
+                email = "alex.martin@example.com",
+                pictureThumbnailUrl = null,
+                onClick = {},
+            )
+            ContactRow(
+                name = "",
+                email = "alex.martin@example.com",
+                pictureThumbnailUrl = null,
+                onClick = {},
+            )
+        }
     }
 }
 
@@ -132,6 +169,6 @@ fun PreviewContactRow() {
     showBackground = true,
 )
 @Composable
-fun PreviewContactRowShimmer() {
+private fun PreviewContactRowShimmer() {
     LydiaContactsTheme { ContactRowShimmer() }
 }

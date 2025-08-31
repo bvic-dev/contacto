@@ -12,6 +12,6 @@ data class RandomUserEntity(
     @ColumnInfo(name = "last_name") val lastName: String?,
     @ColumnInfo(name = "email") val email: String?,
     @ColumnInfo(name = "phone") val phone: String?,
-    @ColumnInfo(name = "pictureUrl") val pictureUrl: String?,
+    @ColumnInfo(name = "picture_thumbnail_url") val pictureThumbnailUrl: String?,
     @ColumnInfo(name = "page") val page: Int,
 )

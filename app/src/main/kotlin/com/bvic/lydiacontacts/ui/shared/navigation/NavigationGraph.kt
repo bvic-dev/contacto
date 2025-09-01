@@ -1,71 +1,38 @@
 package com.bvic.lydiacontacts.ui.shared.navigation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.bvic.lydiacontacts.ui.contactDetail.ContactDetailScreen
 import com.bvic.lydiacontacts.ui.contacts.ContactsScreen
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun NavigationGraph(
     navController: NavHostController,
     startRoute: Route,
 ) {
-    val enterTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? =
-        remember {
-            {
-                slideIntoContainer(SlideDirection.Left)
-            }
-        }
-
-    val exitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? =
-        remember {
-            {
-                slideOutOfContainer(SlideDirection.Left)
-            }
-        }
-
-    val popEnterTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? =
-        remember {
-            {
-                slideIntoContainer(SlideDirection.Right)
-            }
-        }
-
-    val popExitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? =
-        remember {
-            {
-                slideOutOfContainer(SlideDirection.Right)
-            }
-        }
-
-    NavHost(
-        navController = navController,
-        startDestination = startRoute,
-    ) {
-        composable<Route.Contacts>(
-            enterTransition = enterTransition,
-            exitTransition = exitTransition,
-            popEnterTransition = popEnterTransition,
-            popExitTransition = popExitTransition,
+    SharedTransitionLayout {
+        NavHost(
+            navController = navController,
+            startDestination = startRoute,
         ) {
-            ContactsScreen()
-        }
+            composable<Route.Contacts> {
+                ContactsScreen(
+                    animatedVisibilityScope = this,
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                )
+            }
 
-        composable<Route.ContactDetail>(
-            enterTransition = enterTransition,
-            exitTransition = exitTransition,
-            popEnterTransition = popEnterTransition,
-            popExitTransition = popExitTransition,
-        ) {
-            ContactDetailScreen()
+            composable<Route.ContactDetail> {
+                ContactDetailScreen(
+                    animatedVisibilityScope = this,
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                )
+            }
         }
     }
 }

@@ -1,5 +1,8 @@
 package com.bvic.lydiacontacts.ui.contactDetail
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -36,21 +39,26 @@ import com.bvic.lydiacontacts.ui.contactDetail.components.HeaderHero
 import com.bvic.lydiacontacts.ui.contactDetail.components.HeaderTexts
 import com.bvic.lydiacontacts.ui.contactDetail.components.InfoCard
 import com.bvic.lydiacontacts.ui.contactDetail.components.QuickActions
+import com.bvic.lydiacontacts.ui.shared.preview.SharedTransitionPreviewHarness
+import com.bvic.lydiacontacts.ui.shared.theme.LydiaContactsTheme
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.char
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun ContactDetailScreen(
     modifier: Modifier = Modifier,
     contactDetailViewModel: ContactDetailViewModel = hiltViewModel(),
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
     val state by contactDetailViewModel.contactsUiState.collectAsStateWithLifecycle()
     state.contact?.let { contact ->
         ContactDetailScreen(
             modifier = modifier,
+            id = contact.id,
             pictureLarge = contact.pictureLarge,
             name = contact.fullName,
             age = contact.age,
@@ -70,6 +78,8 @@ fun ContactDetailScreen(
                         }
                     it.format(customFormat)
                 },
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope,
             onClickBack = {
                 contactDetailViewModel.submitAction(ContactDetailAction.BackClicked)
             },
@@ -92,10 +102,11 @@ fun ContactDetailScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun ContactDetailScreen(
     modifier: Modifier = Modifier,
+    id: String,
     pictureLarge: String?,
     name: String?,
     age: Int?,
@@ -104,6 +115,8 @@ fun ContactDetailScreen(
     email: String?,
     address: String?,
     birthDate: String?,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onClickBack: () -> Unit,
     onClickMessage: () -> Unit,
     onClickFavorite: () -> Unit,
@@ -120,11 +133,14 @@ fun ContactDetailScreen(
         Box(Modifier.fillMaxSize()) {
             HeaderHero(
                 modifier = Modifier.align(Alignment.TopCenter),
+                id = id,
                 scrollValue = scroll.value,
                 name = name,
                 pictureLarge = pictureLarge,
                 headerHeight = 300.dp,
                 nameForContentDesc = name,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
             )
 
             Column(
@@ -146,7 +162,14 @@ fun ContactDetailScreen(
                             .padding(top = 64.dp, bottom = 24.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        HeaderTexts(name = name, age = age, nationality = nationality)
+                        HeaderTexts(
+                            id = id,
+                            name = name,
+                            age = age,
+                            nationality = nationality,
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                        )
 
                         Spacer(Modifier.height(12.dp))
 
@@ -159,7 +182,18 @@ fun ContactDetailScreen(
                         Spacer(Modifier.height(12.dp))
 
                         InfoCard(icon = Icons.Filled.Phone, title = "Téléphone", value = phone)
-                        InfoCard(icon = Icons.Filled.Email, title = "Email", value = email)
+                        with(sharedTransitionScope) {
+                            InfoCard(
+                                modifier =
+                                    Modifier.sharedBounds(
+                                        rememberSharedContentState(key = "email-$id"),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                    ),
+                                icon = Icons.Filled.Email,
+                                title = "Email",
+                                value = email,
+                            )
+                        }
                         InfoCard(icon = Icons.Filled.Home, title = "Adresse", value = address)
                         InfoCard(icon = Icons.Filled.Face, title = "Naissance", value = birthDate)
 
@@ -184,6 +218,7 @@ fun ContactDetailScreen(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(
     name = "Contact Detail - Light",
     showBackground = true,
@@ -192,24 +227,32 @@ fun ContactDetailScreen(
 private fun PreviewContactDetailLight(
     @PreviewParameter(ContactPreviewProvider::class) data: ContactPreview,
 ) {
-    ContactDetailScreen(
-        pictureLarge = data.picture,
-        name = data.name,
-        age = data.age,
-        nationality = data.nationality,
-        phone = data.phone,
-        email = data.email,
-        address = data.address,
-        birthDate = data.birthDate,
-        onClickBack = {},
-        onClickMessage = {},
-        onClickFavorite = {},
-        onClickCall = {},
-        onClickMail = {},
-        onClickMap = {},
-    )
+    LydiaContactsTheme {
+        SharedTransitionPreviewHarness { sts, avs ->
+            ContactDetailScreen(
+                id = data.id,
+                pictureLarge = data.picture,
+                name = data.name,
+                age = data.age,
+                nationality = data.nationality,
+                phone = data.phone,
+                email = data.email,
+                address = data.address,
+                birthDate = data.birthDate,
+                sharedTransitionScope = sts,
+                animatedVisibilityScope = avs,
+                onClickBack = {},
+                onClickMessage = {},
+                onClickFavorite = {},
+                onClickCall = {},
+                onClickMail = {},
+                onClickMap = {},
+            )
+        }
+    }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(
     name = "Contact Detail - Dark",
     showBackground = true,
@@ -219,20 +262,27 @@ private fun PreviewContactDetailLight(
 private fun PreviewContactDetailDark(
     @PreviewParameter(ContactPreviewProvider::class) data: ContactPreview,
 ) {
-    ContactDetailScreen(
-        pictureLarge = data.picture,
-        name = data.name,
-        age = data.age,
-        nationality = data.nationality,
-        phone = data.phone,
-        email = data.email,
-        address = data.address,
-        birthDate = data.birthDate,
-        onClickBack = {},
-        onClickMessage = {},
-        onClickFavorite = {},
-        onClickCall = {},
-        onClickMail = {},
-        onClickMap = {},
-    )
+    LydiaContactsTheme {
+        SharedTransitionPreviewHarness { sts, avs ->
+            ContactDetailScreen(
+                id = data.id,
+                pictureLarge = data.picture,
+                name = data.name,
+                age = data.age,
+                nationality = data.nationality,
+                phone = data.phone,
+                email = data.email,
+                address = data.address,
+                birthDate = data.birthDate,
+                sharedTransitionScope = sts,
+                animatedVisibilityScope = avs,
+                onClickBack = {},
+                onClickMessage = {},
+                onClickFavorite = {},
+                onClickCall = {},
+                onClickMail = {},
+                onClickMap = {},
+            )
+        }
+    }
 }

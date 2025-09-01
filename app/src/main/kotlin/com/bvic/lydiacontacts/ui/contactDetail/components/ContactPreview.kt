@@ -3,6 +3,7 @@ package com.bvic.lydiacontacts.ui.contactDetail.components
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 
 data class ContactPreview(
+    val id: String,
     val picture: String?,
     val name: String?,
     val age: Int?,
@@ -17,6 +18,7 @@ class ContactPreviewProvider : PreviewParameterProvider<ContactPreview> {
     override val values =
         sequenceOf(
             ContactPreview(
+                id = "123",
                 picture = "https://randomuser.me/api/portraits/men/1.jpg",
                 name = "Thibault Martin",
                 age = 29,
@@ -27,6 +29,7 @@ class ContactPreviewProvider : PreviewParameterProvider<ContactPreview> {
                 birthDate = "14/07/1996",
             ),
             ContactPreview(
+                id = "12334",
                 picture = null,
                 name = "Thibault Martin",
                 age = 29,
@@ -37,6 +40,7 @@ class ContactPreviewProvider : PreviewParameterProvider<ContactPreview> {
                 birthDate = null,
             ),
             ContactPreview(
+                id = "344",
                 picture = null,
                 name = null,
                 age = null,

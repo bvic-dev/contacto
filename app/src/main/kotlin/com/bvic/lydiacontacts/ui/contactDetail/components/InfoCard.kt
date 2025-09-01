@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun InfoCard(
+    modifier: Modifier = Modifier,
     icon: ImageVector,
     title: String,
     value: String?,
@@ -38,7 +39,7 @@ fun InfoCard(
 
     Card(
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
                 .clip(

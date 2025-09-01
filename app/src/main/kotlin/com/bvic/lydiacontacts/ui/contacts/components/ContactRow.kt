@@ -1,6 +1,9 @@
 package com.bvic.lydiacontacts.ui.contacts.components
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,13 +29,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import com.bvic.lydiacontacts.ui.shared.extension.shimmerBackground
+import com.bvic.lydiacontacts.ui.shared.preview.SharedTransitionPreviewHarness
 import com.bvic.lydiacontacts.ui.shared.theme.LydiaContactsTheme
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ContactRow(
+    id: String,
     name: String,
     email: String?,
     pictureThumbnailUrl: String?,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onClick: () -> Unit,
 ) {
     Row(
@@ -43,28 +51,40 @@ fun ContactRow(
                 .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        SubcomposeAsyncImage(
-            model = pictureThumbnailUrl,
-            contentDescription = null,
-            modifier =
-                Modifier
-                    .size(48.dp)
-                    .clip(CircleShape),
-            loading = {
-                CircularProgressIndicator()
-            },
-            error = {
-                EmptyPicture(name)
-            },
-        )
+        with(sharedTransitionScope) {
+            SubcomposeAsyncImage(
+                model = pictureThumbnailUrl,
+                contentDescription = null,
+                modifier =
+                    Modifier
+                        .sharedBounds(
+                            rememberSharedContentState(key = "image-$id"),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                        ).size(48.dp)
+                        .clip(CircleShape),
+                loading = {
+                    CircularProgressIndicator()
+                },
+                error = {
+                    EmptyPicture(name)
+                },
+            )
+        }
 
         Spacer(Modifier.width(16.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                name.ifBlank { "Indéfinie" },
-                style = MaterialTheme.typography.titleMedium,
-            )
+            with(sharedTransitionScope) {
+                Text(
+                    modifier =
+                        Modifier.sharedBounds(
+                            rememberSharedContentState(key = "name-$id"),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                        ),
+                    text = name.ifBlank { "Indéfinie" },
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            }
             email?.let {
                 Text(
                     it,
@@ -133,6 +153,7 @@ fun ContactRowShimmer() {
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(
     name = "Contact Row – Light",
     showBackground = true,
@@ -145,19 +166,27 @@ fun ContactRowShimmer() {
 @Composable
 private fun PreviewContactRow() {
     LydiaContactsTheme {
-        Column {
-            ContactRow(
-                name = "Alex Martin",
-                email = "alex.martin@example.com",
-                pictureThumbnailUrl = null,
-                onClick = {},
-            )
-            ContactRow(
-                name = "",
-                email = "alex.martin@example.com",
-                pictureThumbnailUrl = null,
-                onClick = {},
-            )
+        SharedTransitionPreviewHarness { sts, avs ->
+            Column {
+                ContactRow(
+                    id = "123",
+                    name = "Alex Martin",
+                    email = "alex.martin@example.com",
+                    pictureThumbnailUrl = null,
+                    sharedTransitionScope = sts,
+                    animatedVisibilityScope = avs,
+                    onClick = {},
+                )
+                ContactRow(
+                    id = "345",
+                    name = "",
+                    email = "alex.martin@example.com",
+                    pictureThumbnailUrl = null,
+                    sharedTransitionScope = sts,
+                    animatedVisibilityScope = avs,
+                    onClick = {},
+                )
+            }
         }
     }
 }

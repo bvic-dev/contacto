@@ -1,5 +1,8 @@
 package com.bvic.lydiacontacts.ui.contactDetail.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,41 +24,55 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.SubcomposeAsyncImage
+import com.bvic.lydiacontacts.ui.shared.preview.SharedTransitionPreviewHarness
+import com.bvic.lydiacontacts.ui.shared.theme.LydiaContactsTheme
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun HeaderHero(
     modifier: Modifier = Modifier,
+    id: String,
     scrollValue: Int,
     pictureLarge: String?,
     name: String?,
     headerHeight: Dp,
     nameForContentDesc: String?,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
     Box(
         modifier
             .fillMaxWidth()
             .height(headerHeight),
     ) {
-        SubcomposeAsyncImage(
-            model = pictureLarge,
-            contentDescription = nameForContentDesc?.let { "Photo de $it" } ?: "Photo du contact",
-            modifier =
-                Modifier
-                    .matchParentSize()
-                    .blur(
-                        if (scrollValue > 40) 8.dp else 0.dp,
-                    ),
-            contentScale = ContentScale.Crop,
-            loading = {
-                CircularProgressIndicator()
-            },
-            error = {
-                EmptyPicture(
-                    name = name ?: "",
-                    headerHeight = headerHeight,
-                )
-            },
-        )
+        with(sharedTransitionScope) {
+            SubcomposeAsyncImage(
+                model = pictureLarge,
+                contentDescription =
+                    nameForContentDesc?.let { "Photo de $it" }
+                        ?: "Photo du contact",
+                modifier =
+                    Modifier
+                        .sharedBounds(
+                            rememberSharedContentState(key = "image-$id"),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            renderInOverlayDuringTransition = false,
+                        ).matchParentSize()
+                        .blur(
+                            if (scrollValue > 40) 8.dp else 0.dp,
+                        ),
+                contentScale = ContentScale.Crop,
+                loading = {
+                    CircularProgressIndicator()
+                },
+                error = {
+                    EmptyPicture(
+                        name = name ?: "",
+                        headerHeight = headerHeight,
+                    )
+                },
+            )
+        }
 
         // Scrim vertical pour lisibilité
         Box(
@@ -98,16 +115,24 @@ private fun EmptyPicture(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(name = "HeaderTexts - Light", showBackground = true)
 @Composable
 private fun PreviewHeaderTextsLight() {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        HeaderHero(
-            pictureLarge = null,
-            scrollValue = 0,
-            name = "Alice Dupont",
-            headerHeight = 300.dp,
-            nameForContentDesc = "Alice Dupont",
-        )
+    LydiaContactsTheme {
+        SharedTransitionPreviewHarness { sts, avs ->
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                HeaderHero(
+                    id = "123",
+                    pictureLarge = null,
+                    scrollValue = 0,
+                    name = "Alice Dupont",
+                    headerHeight = 300.dp,
+                    nameForContentDesc = "Alice Dupont",
+                    sharedTransitionScope = sts,
+                    animatedVisibilityScope = avs,
+                )
+            }
+        }
     }
 }

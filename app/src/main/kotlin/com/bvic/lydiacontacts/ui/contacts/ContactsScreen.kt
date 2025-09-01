@@ -1,6 +1,9 @@
 package com.bvic.lydiacontacts.ui.contacts
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -35,14 +38,20 @@ import com.bvic.lydiacontacts.domain.model.RandomUser
 import com.bvic.lydiacontacts.ui.contacts.components.ContactRow
 import com.bvic.lydiacontacts.ui.contacts.components.ContactRowShimmer
 import com.bvic.lydiacontacts.ui.shared.extension.reachedBottom
+import com.bvic.lydiacontacts.ui.shared.preview.SharedTransitionPreviewHarness
 import com.bvic.lydiacontacts.ui.shared.theme.LydiaContactsTheme
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun ContactsScreen(contactsViewModel: ContactsViewModel = hiltViewModel()) {
+fun ContactsScreen(
+    contactsViewModel: ContactsViewModel = hiltViewModel(),
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+) {
     val contactsUiState by contactsViewModel.contactsUiState.collectAsStateWithLifecycle()
     val contactListState = rememberLazyListState()
 
@@ -63,6 +72,8 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel = hiltViewModel()) {
         showInitialShimmers = contactsUiState.isLoadingFirstPage,
         showPaginationShimmers = contactsUiState.isLoadingNextPage,
         queryValue = contactsUiState.query,
+        sharedTransitionScope = sharedTransitionScope,
+        animatedVisibilityScope = animatedVisibilityScope,
         onQueryChanged = { query ->
             contactsViewModel.submitAction(
                 action = ContactsAction.QueryChanged(query),
@@ -81,7 +92,7 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel = hiltViewModel()) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun ContactsScreen(
     modifier: Modifier = Modifier,
@@ -92,6 +103,8 @@ fun ContactsScreen(
     showPaginationShimmers: Boolean = false,
     isRefreshing: Boolean = false,
     queryValue: String,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onQueryChanged: (String) -> Unit,
     onContactClick: (String) -> Unit,
     onRefresh: () -> Unit,
@@ -157,9 +170,12 @@ fun ContactsScreen(
                     key = { randomUser -> randomUser.id },
                 ) { randomUser ->
                     ContactRow(
+                        id = randomUser.id,
                         name = randomUser.fullName,
                         email = randomUser.email,
                         pictureThumbnailUrl = randomUser.pictureThumbnailUrl,
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope,
                         onClick = {
                             onContactClick(randomUser.id)
                         },
@@ -197,6 +213,7 @@ private fun fakeUsers(count: Int = 10): List<RandomUser> =
         )
     }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(
     name = "Contacts – Loading first page",
     showBackground = true,
@@ -204,20 +221,25 @@ private fun fakeUsers(count: Int = 10): List<RandomUser> =
 @Composable
 private fun PreviewContactScreenLoadingFirstPage() {
     LydiaContactsTheme {
-        ContactsScreen(
-            contacts = emptyList(),
-            contactListState = rememberLazyListState(),
-            isScrollEnabled = false,
-            showInitialShimmers = true,
-            showPaginationShimmers = false,
-            queryValue = "",
-            onQueryChanged = {},
-            onContactClick = {},
-            onRefresh = {},
-        )
+        SharedTransitionPreviewHarness { sts, avs ->
+            ContactsScreen(
+                contacts = emptyList(),
+                contactListState = rememberLazyListState(),
+                isScrollEnabled = false,
+                showInitialShimmers = true,
+                showPaginationShimmers = false,
+                queryValue = "",
+                sharedTransitionScope = sts,
+                animatedVisibilityScope = avs,
+                onQueryChanged = {},
+                onContactClick = {},
+                onRefresh = {},
+            )
+        }
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(
     name = "Contacts – With content",
     showBackground = true,
@@ -230,20 +252,25 @@ private fun PreviewContactScreenLoadingFirstPage() {
 @Composable
 private fun PreviewContactScreenWithContent() {
     LydiaContactsTheme {
-        ContactsScreen(
-            contacts = fakeUsers(12),
-            contactListState = rememberLazyListState(),
-            isScrollEnabled = true,
-            showInitialShimmers = false,
-            showPaginationShimmers = false,
-            queryValue = "",
-            onQueryChanged = {},
-            onContactClick = {},
-            onRefresh = {},
-        )
+        SharedTransitionPreviewHarness { sts, avs ->
+            ContactsScreen(
+                contacts = fakeUsers(12),
+                contactListState = rememberLazyListState(),
+                isScrollEnabled = true,
+                showInitialShimmers = false,
+                showPaginationShimmers = false,
+                queryValue = "",
+                sharedTransitionScope = sts,
+                animatedVisibilityScope = avs,
+                onQueryChanged = {},
+                onContactClick = {},
+                onRefresh = {},
+            )
+        }
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(
     name = "Contacts – Loading next page",
     showBackground = true,
@@ -251,15 +278,19 @@ private fun PreviewContactScreenWithContent() {
 @Composable
 private fun PreviewContactScreenLoadingNextPage() {
     LydiaContactsTheme {
-        ContactsScreen(
-            contacts = fakeUsers(5),
-            isScrollEnabled = true,
-            showInitialShimmers = false,
-            showPaginationShimmers = true,
-            queryValue = "",
-            onQueryChanged = {},
-            onContactClick = {},
-            onRefresh = {},
-        )
+        SharedTransitionPreviewHarness { sts, avs ->
+            ContactsScreen(
+                contacts = fakeUsers(5),
+                isScrollEnabled = true,
+                showInitialShimmers = false,
+                showPaginationShimmers = true,
+                queryValue = "",
+                sharedTransitionScope = sts,
+                animatedVisibilityScope = avs,
+                onQueryChanged = {},
+                onContactClick = {},
+                onRefresh = {},
+            )
+        }
     }
 }

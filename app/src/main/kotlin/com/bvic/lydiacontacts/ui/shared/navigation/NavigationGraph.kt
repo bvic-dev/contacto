@@ -10,7 +10,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.bvic.lydiacontacts.ui.contact.ContactDetailScreen
+import com.bvic.lydiacontacts.ui.contactDetail.ContactDetailScreen
 import com.bvic.lydiacontacts.ui.contacts.ContactsScreen
 
 @Composable

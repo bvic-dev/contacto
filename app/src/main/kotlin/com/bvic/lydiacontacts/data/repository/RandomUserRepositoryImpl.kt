@@ -58,6 +58,17 @@ class RandomUserRepositoryImpl(
             emit(Result.Success(result))
         }.flowOn(Dispatchers.IO)
 
+    override fun getLocalUser(id: String): Flow<Result<RandomUser, Error>> =
+        flow {
+            emit(Result.Loading)
+            val result = randomUserDao.getRandomUserById(id)
+            if (result == null) {
+                emit(Result.Error(NetworkError.NotFound))
+                return@flow
+            }
+            emit(Result.Success(result.toDomain()))
+        }
+
     override suspend fun cleanContact() {
         randomUserDao.deleteAllRandomUsers()
     }

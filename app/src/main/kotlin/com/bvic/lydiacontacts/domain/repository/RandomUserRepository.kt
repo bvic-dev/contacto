@@ -15,5 +15,7 @@ interface RandomUserRepository {
 
     fun searchLocalUsers(rawQuery: String): Flow<Result<List<RandomUser>, Error>>
 
+    fun getLocalUser(id: String): Flow<Result<RandomUser, Error>>
+
     suspend fun cleanContact()
 }

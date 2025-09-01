@@ -16,5 +16,12 @@ data class RandomUserEntity(
     @ColumnInfo(name = "email") val email: String?,
     @ColumnInfo(name = "phone") val phone: String?,
     @ColumnInfo(name = "picture_thumbnail_url") val pictureThumbnailUrl: String?,
+    @ColumnInfo(name = "picture_large") val pictureLarge: String?,
+    @ColumnInfo(name = "age") val age: Int?,
+    @ColumnInfo(name = "nationality") val nationality: String?,
+    @ColumnInfo(name = "address") val address: String?,
+    @ColumnInfo(name = "latitude") val latitude: Double?,
+    @ColumnInfo(name = "longitude") val longitude: Double?,
+    @ColumnInfo(name = "birth_date") val birthDate: String?,
     @ColumnInfo(name = "page") val page: Int,
 )

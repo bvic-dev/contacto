@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -54,7 +53,6 @@ class ContactsViewModel
         @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
         private val partials: Flow<ContactsPartial> =
             actions
-                .onStart { emit(ContactsAction.ListEndReached) }
                 .flatMapConcat { action ->
                     when (action) {
                         is ContactsAction.QueryChanged -> handleQueryChanged(action)
@@ -72,7 +70,7 @@ class ContactsViewModel
                 .scan(ContactsState()) { state, partial -> reduce(prev = state, change = partial) }
                 .stateIn(
                     scope = viewModelScope,
-                    started = SharingStarted.WhileSubscribed(5_000),
+                    started = SharingStarted.Eagerly,
                     initialValue = ContactsState(),
                 )
 

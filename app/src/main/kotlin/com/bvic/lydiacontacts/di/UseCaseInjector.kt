@@ -1,6 +1,7 @@
 package com.bvic.lydiacontacts.di
 
 import com.bvic.lydiacontacts.domain.repository.RandomUserRepository
+import com.bvic.lydiacontacts.domain.usecase.GetContactUseCase
 import com.bvic.lydiacontacts.domain.usecase.GetContactsUseCase
 import com.bvic.lydiacontacts.domain.usecase.SearchContactsUseCase
 import dagger.Module
@@ -14,7 +15,7 @@ import javax.inject.Singleton
 object UseCaseInjector {
     @Provides
     @Singleton
-    fun provideGetContactUseCase(randomUserRepository: RandomUserRepository): GetContactsUseCase =
+    fun provideGetContactsUseCase(randomUserRepository: RandomUserRepository): GetContactsUseCase =
         GetContactsUseCase(
             randomUserRepository = randomUserRepository,
         )
@@ -23,6 +24,13 @@ object UseCaseInjector {
     @Singleton
     fun provideSearchContactsUseCase(randomUserRepository: RandomUserRepository): SearchContactsUseCase =
         SearchContactsUseCase(
+            randomUserRepository = randomUserRepository,
+        )
+
+    @Provides
+    @Singleton
+    fun provideGetContactUseCase(randomUserRepository: RandomUserRepository): GetContactUseCase =
+        GetContactUseCase(
             randomUserRepository = randomUserRepository,
         )
 }

@@ -38,6 +38,8 @@ import com.bvic.lydiacontacts.ui.shared.extension.reachedBottom
 import com.bvic.lydiacontacts.ui.shared.theme.LydiaContactsTheme
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @Composable
 fun ContactsScreen(contactsViewModel: ContactsViewModel = hiltViewModel()) {
@@ -176,6 +178,7 @@ fun ContactsScreen(
     }
 }
 
+@OptIn(ExperimentalTime::class)
 private fun fakeUsers(count: Int = 10): List<RandomUser> =
     List(count) { idx ->
         RandomUser(
@@ -184,6 +187,13 @@ private fun fakeUsers(count: Int = 10): List<RandomUser> =
             email = "user$idx@mail.com",
             phone = "01 23 45 67 89",
             pictureThumbnailUrl = null,
+            pictureLarge = null,
+            age = 25,
+            nationality = "Francais",
+            address = "123 rue de la paix",
+            latitude = 48.8566,
+            longitude = 2.3522,
+            birthDate = Instant.fromEpochMilliseconds(0),
         )
     }
 

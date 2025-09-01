@@ -8,8 +8,25 @@ import kotlin.uuid.Uuid
 sealed interface NavigationAction {
     data object Idle : NavigationAction
 
-    data class Redirect(
-        val uri: String,
+    data class OpenGoogleMap(
+        val latitude: Double,
+        val longitude: Double,
+        val address: String,
+        val id: String = Uuid.random().toString(),
+    ) : NavigationAction
+
+    data class OpenEmailApp(
+        val email: String,
+        val id: String = Uuid.random().toString(),
+    ) : NavigationAction
+
+    data class OpenCallApp(
+        val phoneNumber: String,
+        val id: String = Uuid.random().toString(),
+    ) : NavigationAction
+
+    data class OpenSmsApp(
+        val phoneNumber: String,
         val id: String = Uuid.random().toString(),
     ) : NavigationAction
 

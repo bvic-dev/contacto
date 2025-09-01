@@ -18,8 +18,42 @@ class Navigator
         private val _startRoute: MutableStateFlow<Route> = MutableStateFlow(Route.Contacts)
         val startRoute = _startRoute.asStateFlow()
 
-        suspend fun redirectTo(uri: String) {
-            _navigationActions.send(NavigationAction.Redirect(uri))
+        suspend fun openSmsApp(phoneNumber: String) {
+            _navigationActions.send(
+                NavigationAction.OpenSmsApp(
+                    phoneNumber = phoneNumber,
+                ),
+            )
+        }
+
+        suspend fun openCallApp(phoneNumber: String) {
+            _navigationActions.send(
+                NavigationAction.OpenCallApp(
+                    phoneNumber = phoneNumber,
+                ),
+            )
+        }
+
+        suspend fun openMailApp(email: String) {
+            _navigationActions.send(
+                NavigationAction.OpenEmailApp(
+                    email = email,
+                ),
+            )
+        }
+
+        suspend fun openGoogleMapApp(
+            latitude: Double,
+            longitude: Double,
+            address: String,
+        ) {
+            _navigationActions.send(
+                NavigationAction.OpenGoogleMap(
+                    latitude = latitude,
+                    longitude = longitude,
+                    address = address,
+                ),
+            )
         }
 
         suspend fun navigate(

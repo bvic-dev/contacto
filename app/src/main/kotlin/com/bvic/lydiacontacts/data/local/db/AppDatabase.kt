@@ -7,7 +7,7 @@ import com.bvic.lydiacontacts.data.local.entity.RandomUserEntity
 
 @Database(
     entities = [RandomUserEntity::class],
-    version = 3,
+    version = 5,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {

@@ -72,6 +72,7 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.coil)
     implementation(libs.coil.network.okhttp)
+    implementation(libs.kotlin.date)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -22,6 +22,8 @@ internal sealed interface ContactsPartial {
     data class QuerySet(
         val value: String,
     ) : ContactsPartial
+
+    data object Refreshing : ContactsPartial
 }
 
 internal fun reduce(
@@ -36,6 +38,7 @@ internal fun reduce(
             prev.copy(
                 contacts = merged,
                 loading = false,
+                isRefreshing = false,
                 error = null,
                 endReached = change.data.isEmpty() || change.data.size < DEFAULT_PAGE_SIZE,
             )
@@ -43,6 +46,7 @@ internal fun reduce(
 
         is ContactsPartial.Failed ->
             prev.copy(
+                isRefreshing = false,
                 loading = false,
                 error = change.error,
                 endReached = true,
@@ -54,5 +58,13 @@ internal fun reduce(
             prev.copy(
                 contacts = change.data,
                 loading = false,
+                isRefreshing = false,
+            )
+
+        ContactsPartial.Refreshing ->
+            prev.copy(
+                contacts = emptyList(),
+                isRefreshing = true,
+                endReached = false,
             )
     }

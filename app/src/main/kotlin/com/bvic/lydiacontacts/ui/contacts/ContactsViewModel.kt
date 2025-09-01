@@ -57,6 +57,7 @@ class ContactsViewModel
                         is ContactsAction.QueryChanged -> handleQueryChanged(action)
                         is ContactsAction.ListEndReached -> handleListEndReached()
                         is ContactsAction.ContactClicked -> handleContactClicked(action)
+                        is ContactsAction.PullToRefresh -> handleListPullToRefresh()
                     }
                 }.catch { e ->
                     // TODO error
@@ -132,6 +133,27 @@ class ContactsViewModel
             flow {
                 _effects.emit(ContactsEffect.NavigateToDetails(action.id))
                 emitAll(emptyFlow())
+            }
+
+        private fun handleListPullToRefresh(): Flow<ContactsPartial> =
+            flow {
+                emit(ContactsPartial.Refreshing)
+                pageRequests.value = 1
+                emitAll(
+                    getContactsUseCase(
+                        pageRequests.value,
+                        DEFAULT_PAGE_SIZE,
+                        forceRefresh = true,
+                    ).map { res ->
+                        when (res) {
+                            is Result.Loading -> ContactsPartial.Loading
+                            is Result.Success ->
+                                ContactsPartial.PageLoaded(pageRequests.value, res.data)
+
+                            is Result.Error -> ContactsPartial.Failed(res.error)
+                        }
+                    },
+                )
             }
 
         fun submitAction(action: ContactsAction) {

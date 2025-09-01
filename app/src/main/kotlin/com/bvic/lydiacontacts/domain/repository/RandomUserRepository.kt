@@ -10,7 +10,10 @@ interface RandomUserRepository {
     fun fetchRandomUserPage(
         page: Int,
         pageSize: Int,
+        forceRefresh: Boolean,
     ): Flow<Result<List<RandomUser>, NetworkError>>
 
     fun searchLocalUsers(rawQuery: String): Flow<Result<List<RandomUser>, Error>>
+
+    suspend fun cleanContact()
 }

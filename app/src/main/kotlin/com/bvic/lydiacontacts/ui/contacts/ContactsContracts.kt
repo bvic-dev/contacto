@@ -5,6 +5,7 @@ import com.bvic.lydiacontacts.domain.model.RandomUser
 
 data class ContactsState(
     val contacts: List<RandomUser> = emptyList(),
+    val isRefreshing: Boolean = false,
     val loading: Boolean = false,
     val error: Error? = null,
     val endReached: Boolean = false,
@@ -27,6 +28,8 @@ sealed interface ContactsAction {
     ) : ContactsAction
 
     data object ListEndReached : ContactsAction
+
+    data object PullToRefresh : ContactsAction
 }
 
 sealed interface ContactsEffect {

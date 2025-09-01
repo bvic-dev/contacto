@@ -10,9 +10,10 @@ import com.bvic.lydiacontacts.data.mapper.toEntity
 import com.bvic.lydiacontacts.data.remote.api.RandomUserApi
 import com.bvic.lydiacontacts.domain.model.RandomUser
 import com.bvic.lydiacontacts.domain.repository.RandomUserRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlin.collections.map
+import kotlinx.coroutines.flow.flowOn
 
 class RandomUserRepositoryImpl(
     private val randomUserApi: RandomUserApi,
@@ -21,6 +22,7 @@ class RandomUserRepositoryImpl(
     override fun fetchRandomUserPage(
         page: Int,
         pageSize: Int,
+        forceRefresh: Boolean,
     ): Flow<Result<List<RandomUser>, NetworkError>> =
         NetworkBoundResource
             .makeCache(
@@ -28,12 +30,15 @@ class RandomUserRepositoryImpl(
                     randomUserDao.getPage(page)
                 },
                 shouldFetch = {
-                    it.isEmpty()
+                    it.isEmpty() || forceRefresh
                 },
                 fetchFromNetwork = {
                     randomUserApi.getRandomUsers(page = page, results = pageSize)
                 },
                 saveNetworkResult = {
+                    if (forceRefresh) {
+                        randomUserDao.deleteAllRandomUsers()
+                    }
                     val entities = it?.results?.map { dto -> dto.toEntity(page) }
                     if (entities.isNullOrEmpty()) return@makeCache
                     randomUserDao.insertAll(entities)
@@ -51,5 +56,9 @@ class RandomUserRepositoryImpl(
                         query = query,
                     ).map { it.toDomain() }
             emit(Result.Success(result))
-        }
+        }.flowOn(Dispatchers.IO)
+
+    override suspend fun cleanContact() {
+        randomUserDao.deleteAllRandomUsers()
+    }
 }

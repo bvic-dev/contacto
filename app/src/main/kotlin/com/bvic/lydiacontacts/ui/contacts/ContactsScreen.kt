@@ -19,6 +19,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,6 +56,7 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel = hiltViewModel()) {
     ContactsScreen(
         contactListState = contactListState,
         contacts = contactsUiState.contacts,
+        isRefreshing = contactsUiState.isRefreshing,
         isScrollEnabled = !contactsUiState.isLoadingFirstPage,
         showInitialShimmers = contactsUiState.isLoadingFirstPage,
         showPaginationShimmers = contactsUiState.isLoadingNextPage,
@@ -69,6 +71,11 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel = hiltViewModel()) {
                 action = ContactsAction.ContactClicked(id),
             )
         },
+        onRefresh = {
+            contactsViewModel.submitAction(
+                action = ContactsAction.PullToRefresh,
+            )
+        },
     )
 }
 
@@ -81,9 +88,11 @@ fun ContactsScreen(
     isScrollEnabled: Boolean = true,
     showInitialShimmers: Boolean = false,
     showPaginationShimmers: Boolean = false,
+    isRefreshing: Boolean = false,
     queryValue: String,
     onQueryChanged: (String) -> Unit,
     onContactClick: (String) -> Unit,
+    onRefresh: () -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -99,62 +108,67 @@ fun ContactsScreen(
             )
         },
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = innerPadding,
-            state = contactListState,
-            userScrollEnabled = isScrollEnabled,
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
+            modifier = Modifier.padding(innerPadding),
         ) {
-            item {
-                OutlinedTextField(
-                    value = queryValue,
-                    onValueChange = onQueryChanged,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                    placeholder = { Text("Rechercher un contact") },
-                    leadingIcon = { Icon(Icons.Outlined.Search, null) },
-                    trailingIcon = {
-                        if (queryValue.isNotEmpty()) {
-                            IconButton(onClick = { onQueryChanged("") }) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Clear,
-                                    contentDescription = null,
-                                    modifier = Modifier.padding(end = 16.dp),
-                                )
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = contactListState,
+                userScrollEnabled = isScrollEnabled,
+            ) {
+                item {
+                    OutlinedTextField(
+                        value = queryValue,
+                        onValueChange = onQueryChanged,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                        placeholder = { Text("Rechercher un contact") },
+                        leadingIcon = { Icon(Icons.Outlined.Search, null) },
+                        trailingIcon = {
+                            if (queryValue.isNotEmpty()) {
+                                IconButton(onClick = { onQueryChanged("") }) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Clear,
+                                        contentDescription = null,
+                                        modifier = Modifier.padding(end = 16.dp),
+                                    )
+                                }
                             }
-                        }
-                    },
-                    shape = RoundedCornerShape(50),
-                )
-            }
-            if (showInitialShimmers) {
-                repeat(20) {
-                    item {
-                        ContactRowShimmer()
-                    }
+                        },
+                        shape = RoundedCornerShape(50),
+                    )
                 }
-                return@LazyColumn
-            }
-            items(
-                items = contacts,
-                key = { randomUser -> randomUser.id },
-            ) { randomUser ->
-                ContactRow(
-                    name = randomUser.fullName,
-                    email = randomUser.email,
-                    pictureThumbnailUrl = randomUser.pictureThumbnailUrl,
-                    onClick = {
-                        onContactClick(randomUser.id)
-                    },
-                )
-            }
+                if (showInitialShimmers) {
+                    repeat(20) {
+                        item {
+                            ContactRowShimmer()
+                        }
+                    }
+                    return@LazyColumn
+                }
+                items(
+                    items = contacts,
+                    key = { randomUser -> randomUser.id },
+                ) { randomUser ->
+                    ContactRow(
+                        name = randomUser.fullName,
+                        email = randomUser.email,
+                        pictureThumbnailUrl = randomUser.pictureThumbnailUrl,
+                        onClick = {
+                            onContactClick(randomUser.id)
+                        },
+                    )
+                }
 
-            if (showPaginationShimmers) {
-                repeat(2) {
-                    item {
-                        ContactRowShimmer()
+                if (showPaginationShimmers) {
+                    repeat(2) {
+                        item {
+                            ContactRowShimmer()
+                        }
                     }
                 }
             }
@@ -189,6 +203,7 @@ private fun PreviewContactScreenLoadingFirstPage() {
             queryValue = "",
             onQueryChanged = {},
             onContactClick = {},
+            onRefresh = {},
         )
     }
 }
@@ -214,6 +229,7 @@ private fun PreviewContactScreenWithContent() {
             queryValue = "",
             onQueryChanged = {},
             onContactClick = {},
+            onRefresh = {},
         )
     }
 }
@@ -233,6 +249,7 @@ private fun PreviewContactScreenLoadingNextPage() {
             queryValue = "",
             onQueryChanged = {},
             onContactClick = {},
+            onRefresh = {},
         )
     }
 }

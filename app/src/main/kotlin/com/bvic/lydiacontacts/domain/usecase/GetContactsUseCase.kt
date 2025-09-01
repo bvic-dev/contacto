@@ -8,5 +8,10 @@ class GetContactsUseCase(
     operator fun invoke(
         page: Int,
         pageSize: Int,
-    ) = randomUserRepository.fetchRandomUserPage(page = page, pageSize = pageSize)
+        forceRefresh: Boolean = false,
+    ) = randomUserRepository.fetchRandomUserPage(
+        page = page,
+        pageSize = pageSize,
+        forceRefresh = forceRefresh,
+    )
 }

@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.bvic.lydiacontacts.core.Result
 import com.bvic.lydiacontacts.domain.usecase.GetContactsUseCase
 import com.bvic.lydiacontacts.domain.usecase.SearchContactsUseCase
+import com.bvic.lydiacontacts.ui.shared.navigation.Navigator
+import com.bvic.lydiacontacts.ui.shared.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -34,6 +36,7 @@ class ContactsViewModel
     constructor(
         private val getContactsUseCase: GetContactsUseCase,
         private val searchContactsUseCase: SearchContactsUseCase,
+        private val navigator: Navigator,
     ) : ViewModel() {
         private val actions =
             MutableSharedFlow<ContactsAction>(
@@ -131,7 +134,7 @@ class ContactsViewModel
 
         private fun handleContactClicked(action: ContactsAction.ContactClicked): Flow<ContactsPartial> =
             flow {
-                _effects.emit(ContactsEffect.NavigateToDetails(action.id))
+                navigator.navigate(destination = Route.ContactDetail(action.id))
                 emitAll(emptyFlow())
             }
 

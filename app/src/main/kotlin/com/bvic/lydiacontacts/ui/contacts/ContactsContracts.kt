@@ -33,10 +33,6 @@ sealed interface ContactsAction {
 }
 
 sealed interface ContactsEffect {
-    data class NavigateToDetails(
-        val userId: String,
-    ) : ContactsEffect
-
     data class ShowMessage(
         val message: String,
     ) : ContactsEffect

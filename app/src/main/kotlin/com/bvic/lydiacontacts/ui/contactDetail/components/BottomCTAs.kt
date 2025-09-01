@@ -2,11 +2,17 @@ package com.bvic.lydiacontacts.ui.contactDetail.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +39,9 @@ fun BottomCTAs(
                     .weight(1f)
                     .height(50.dp),
         ) {
-            Text("💬 Message", style = MaterialTheme.typography.titleMedium)
+            Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Message", style = MaterialTheme.typography.titleMedium)
         }
         FilledTonalButton(
             onClick = onFavorite,
@@ -42,7 +50,11 @@ fun BottomCTAs(
                     .weight(1f)
                     .height(50.dp),
         ) {
-            Text("⭐ Favoris", style = MaterialTheme.typography.titleMedium)
+            Row {
+                Icon(imageVector = Icons.Default.Star, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Favoris", style = MaterialTheme.typography.titleMedium)
+            }
         }
     }
 }

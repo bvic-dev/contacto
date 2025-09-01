@@ -2,12 +2,10 @@ package com.bvic.lydiacontacts.ui.contactDetail.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Email
@@ -46,9 +44,8 @@ fun TonalActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    FilledTonalButton(onClick, modifier.height(50.dp)) {
+    FilledTonalButton(onClick, modifier.height(40.dp)) {
         Icon(icon, contentDescription = null, modifier = Modifier.size(40.dp))
-        Spacer(Modifier.width(8.dp))
     }
 }
 

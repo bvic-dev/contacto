@@ -5,7 +5,10 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "randomUsers", indices = [Index("page")])
+@Entity(
+    tableName = "randomUsers",
+    indices = [Index("page"), Index("first_name"), Index("last_name")],
+)
 data class RandomUserEntity(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "first_name") val firstName: String?,

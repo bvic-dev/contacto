@@ -10,9 +10,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -45,7 +47,9 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel = hiltViewModel()) {
         snapshotFlow { contactListState.reachedBottom() }
             .distinctUntilChanged()
             .filter { it }
-            .collect { contactsViewModel.onListEndReached() }
+            .collect {
+                contactsViewModel.submitAction(ContactsAction.ListEndReached)
+            }
     }
 
     ContactsScreen(
@@ -54,6 +58,17 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel = hiltViewModel()) {
         isScrollEnabled = !contactsUiState.isLoadingFirstPage,
         showInitialShimmers = contactsUiState.isLoadingFirstPage,
         showPaginationShimmers = contactsUiState.isLoadingNextPage,
+        queryValue = contactsUiState.query,
+        onQueryChanged = { query ->
+            contactsViewModel.submitAction(
+                action = ContactsAction.QueryChanged(query),
+            )
+        },
+        onContactClick = { id ->
+            contactsViewModel.submitAction(
+                action = ContactsAction.ContactClicked(id),
+            )
+        },
     )
 }
 
@@ -66,6 +81,9 @@ fun ContactsScreen(
     isScrollEnabled: Boolean = true,
     showInitialShimmers: Boolean = false,
     showPaginationShimmers: Boolean = false,
+    queryValue: String,
+    onQueryChanged: (String) -> Unit,
+    onContactClick: (String) -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -89,14 +107,25 @@ fun ContactsScreen(
         ) {
             item {
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = queryValue,
+                    onValueChange = onQueryChanged,
                     modifier =
                         Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
                     placeholder = { Text("Rechercher un contact") },
                     leadingIcon = { Icon(Icons.Outlined.Search, null) },
+                    trailingIcon = {
+                        if (queryValue.isNotEmpty()) {
+                            IconButton(onClick = { onQueryChanged("") }) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Clear,
+                                    contentDescription = null,
+                                    modifier = Modifier.padding(end = 16.dp),
+                                )
+                            }
+                        }
+                    },
                     shape = RoundedCornerShape(50),
                 )
             }
@@ -116,7 +145,9 @@ fun ContactsScreen(
                     name = randomUser.fullName,
                     email = randomUser.email,
                     pictureThumbnailUrl = randomUser.pictureThumbnailUrl,
-                    onClick = {},
+                    onClick = {
+                        onContactClick(randomUser.id)
+                    },
                 )
             }
 
@@ -155,6 +186,9 @@ private fun PreviewContactScreenLoadingFirstPage() {
             isScrollEnabled = false,
             showInitialShimmers = true,
             showPaginationShimmers = false,
+            queryValue = "",
+            onQueryChanged = {},
+            onContactClick = {},
         )
     }
 }
@@ -177,6 +211,9 @@ private fun PreviewContactScreenWithContent() {
             isScrollEnabled = true,
             showInitialShimmers = false,
             showPaginationShimmers = false,
+            queryValue = "",
+            onQueryChanged = {},
+            onContactClick = {},
         )
     }
 }
@@ -193,6 +230,9 @@ private fun PreviewContactScreenLoadingNextPage() {
             isScrollEnabled = true,
             showInitialShimmers = false,
             showPaginationShimmers = true,
+            queryValue = "",
+            onQueryChanged = {},
+            onContactClick = {},
         )
     }
 }

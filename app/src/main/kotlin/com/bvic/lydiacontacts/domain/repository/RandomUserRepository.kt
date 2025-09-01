@@ -1,5 +1,6 @@
 package com.bvic.lydiacontacts.domain.repository
 
+import com.bvic.lydiacontacts.core.Error
 import com.bvic.lydiacontacts.core.NetworkError
 import com.bvic.lydiacontacts.core.Result
 import com.bvic.lydiacontacts.domain.model.RandomUser
@@ -10,4 +11,6 @@ interface RandomUserRepository {
         page: Int,
         pageSize: Int,
     ): Flow<Result<List<RandomUser>, NetworkError>>
+
+    fun searchLocalUsers(rawQuery: String): Flow<Result<List<RandomUser>, Error>>
 }

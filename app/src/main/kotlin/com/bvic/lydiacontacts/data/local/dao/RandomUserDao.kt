@@ -11,6 +11,19 @@ interface RandomUserDao {
     @Query("SELECT * FROM randomUsers WHERE page = :page")
     suspend fun getPage(page: Int): List<RandomUserEntity>
 
+    @Query(
+        """
+        SELECT * FROM randomUsers
+        WHERE (:query = '' 
+               OR first_name LIKE :query 
+               OR last_name LIKE :query 
+               OR email LIKE :query 
+               OR phone LIKE :query)
+        ORDER BY last_name ASC, first_name ASC
+    """,
+    )
+    suspend fun search(query: String): List<RandomUserEntity>
+
     @Query("SELECT * FROM randomUsers WHERE id = :id")
     suspend fun getRandomUserById(id: String): RandomUserEntity?
 

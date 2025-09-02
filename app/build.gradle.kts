@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.mannodermaus.junit5)
+    alias(libs.plugins.kotlin.kover)
 }
 
 android {

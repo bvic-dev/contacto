@@ -22,6 +22,7 @@ lottie = "6.6.7"
 mockk = "1.14.5"
 coroutines = "1.10.2"
 googleThruth = "1.4.4"
+kotlinKover = "0.9.1"
 
 [libraries]
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
@@ -65,5 +66,6 @@ hilt-plugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 mannodermaus-junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "mannodermausJunit5" }
+kotlin-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kotlinKover" }
 
 

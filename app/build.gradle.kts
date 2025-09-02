@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -11,6 +12,15 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        create("bvic") {
+            storeFile = file(gradleLocalProperties(rootDir, providers).getProperty("STORE_FILE_PATH"))
+            storePassword = gradleLocalProperties(rootDir, providers).getProperty("STORE_PASSWORD")
+            keyPassword = gradleLocalProperties(rootDir, providers).getProperty("STORE_PASSWORD")
+            keyAlias = gradleLocalProperties(rootDir, providers).getProperty("STORE_KEY")
+        }
+    }
+
     namespace = "com.bvic.contacto"
     compileSdk = 36
 
@@ -26,11 +36,19 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isDebuggable = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            signingConfig = signingConfigs.getByName("bvic")
+        }
+
+        debug {
+            versionNameSuffix = ".debug"
+            applicationIdSuffix = ".debug"
         }
     }
     compileOptions {

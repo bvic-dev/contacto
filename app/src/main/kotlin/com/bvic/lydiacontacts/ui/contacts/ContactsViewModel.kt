@@ -79,7 +79,6 @@ class ContactsViewModel
                 emit(ContactsPartial.QuerySet(action.value))
 
                 if (action.value.isBlank()) {
-                    // Reset pagination et charge la première page
                     pageRequests.value = 1
                     emitAll(
                         getContactsUseCase(pageRequests.value, DEFAULT_PAGE_SIZE).map { res ->

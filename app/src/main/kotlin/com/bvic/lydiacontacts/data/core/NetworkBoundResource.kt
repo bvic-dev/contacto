@@ -1,7 +1,7 @@
 package com.bvic.lydiacontacts.data.core
 
-import com.bvic.lydiacontacts.core.NetworkError
 import com.bvic.lydiacontacts.core.Result
+import com.bvic.lydiacontacts.core.network.NetworkError
 import com.bvic.lydiacontacts.core.onError
 import com.bvic.lydiacontacts.core.onSuccess
 import com.google.gson.JsonSyntaxException

@@ -1,10 +1,14 @@
 package com.bvic.lydiacontacts.di
 
+import android.content.Context
 import com.bvic.lydiacontacts.BuildConfig
+import com.bvic.lydiacontacts.core.network.AndroidNetworkMonitor
+import com.bvic.lydiacontacts.core.network.NetworkMonitor
 import com.bvic.lydiacontacts.data.remote.api.RandomUserApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -49,4 +53,13 @@ object NetworkInjector {
             .baseUrl("https://randomuser.me/")
             .build()
             .create(RandomUserApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideNetworkMonitor(
+        @ApplicationContext context: Context,
+    ): NetworkMonitor =
+        AndroidNetworkMonitor(
+            context = context,
+        )
 }

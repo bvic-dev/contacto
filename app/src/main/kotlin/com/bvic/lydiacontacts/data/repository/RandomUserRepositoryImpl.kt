@@ -1,8 +1,8 @@
 package com.bvic.lydiacontacts.data.repository
 
 import com.bvic.lydiacontacts.core.Error
-import com.bvic.lydiacontacts.core.NetworkError
 import com.bvic.lydiacontacts.core.Result
+import com.bvic.lydiacontacts.core.network.NetworkError
 import com.bvic.lydiacontacts.data.core.NetworkBoundResource
 import com.bvic.lydiacontacts.data.local.dao.RandomUserDao
 import com.bvic.lydiacontacts.data.mapper.toDomain

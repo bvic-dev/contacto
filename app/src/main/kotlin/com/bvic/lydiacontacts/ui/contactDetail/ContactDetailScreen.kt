@@ -14,8 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Cake
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -195,7 +195,7 @@ fun ContactDetailScreen(
                             )
                         }
                         InfoCard(icon = Icons.Filled.Home, title = "Adresse", value = address)
-                        InfoCard(icon = Icons.Filled.Face, title = "Naissance", value = birthDate)
+                        InfoCard(icon = Icons.Filled.Cake, title = "Naissance", value = birthDate)
 
                         Spacer(Modifier.height(16.dp))
 

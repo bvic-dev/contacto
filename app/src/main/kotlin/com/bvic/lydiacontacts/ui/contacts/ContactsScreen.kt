@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -39,6 +40,9 @@ import com.bvic.lydiacontacts.domain.model.RandomUser
 import com.bvic.lydiacontacts.ui.contacts.components.ContactRow
 import com.bvic.lydiacontacts.ui.contacts.components.ContactRowShimmer
 import com.bvic.lydiacontacts.ui.contacts.components.EmptyDataSet
+import com.bvic.lydiacontacts.ui.shared.connectivity.ConnectivityBanner
+import com.bvic.lydiacontacts.ui.shared.connectivity.ConnectivityUiState
+import com.bvic.lydiacontacts.ui.shared.connectivity.ConnectivityViewModel
 import com.bvic.lydiacontacts.ui.shared.extension.reachedBottom
 import com.bvic.lydiacontacts.ui.shared.preview.SharedTransitionPreviewHarness
 import com.bvic.lydiacontacts.ui.shared.theme.LydiaContactsTheme
@@ -51,11 +55,14 @@ import kotlin.time.Instant
 @Composable
 fun ContactsScreen(
     contactsViewModel: ContactsViewModel = hiltViewModel(),
+    connectivityViewModel: ConnectivityViewModel = hiltViewModel(),
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
     val contactsUiState by contactsViewModel.contactsUiState.collectAsStateWithLifecycle()
     val contactListState = rememberLazyListState()
+
+    val connectivityState by connectivityViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(contactListState) {
         snapshotFlow { contactListState.reachedBottom() }
@@ -75,6 +82,7 @@ fun ContactsScreen(
         showPaginationShimmers = contactsUiState.isLoadingNextPage,
         showEmptyDataSet = contactsUiState.showEmptyDataSet,
         queryValue = contactsUiState.query,
+        connectivityState = connectivityState,
         sharedTransitionScope = sharedTransitionScope,
         animatedVisibilityScope = animatedVisibilityScope,
         onQueryChanged = { query ->
@@ -107,6 +115,7 @@ fun ContactsScreen(
     isRefreshing: Boolean = false,
     showEmptyDataSet: Boolean = false,
     queryValue: String,
+    connectivityState: ConnectivityUiState,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     onQueryChanged: (String) -> Unit,
@@ -127,85 +136,89 @@ fun ContactsScreen(
             )
         },
     ) { innerPadding ->
-        PullToRefreshBox(
-            isRefreshing = isRefreshing,
-            onRefresh = onRefresh,
+        Column(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
         ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = contactListState,
-                userScrollEnabled = isScrollEnabled,
+            ConnectivityBanner(state = connectivityState)
+            PullToRefreshBox(
+                isRefreshing = isRefreshing,
+                onRefresh = onRefresh,
             ) {
-                item {
-                    OutlinedTextField(
-                        value = queryValue,
-                        onValueChange = onQueryChanged,
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                        placeholder = { Text("Rechercher un contact") },
-                        leadingIcon = { Icon(Icons.Outlined.Search, null) },
-                        trailingIcon = {
-                            if (queryValue.isNotEmpty()) {
-                                IconButton(onClick = { onQueryChanged("") }) {
-                                    Icon(
-                                        imageVector = Icons.Outlined.Clear,
-                                        contentDescription = null,
-                                        modifier = Modifier.padding(end = 16.dp),
-                                    )
-                                }
-                            }
-                        },
-                        shape = RoundedCornerShape(50),
-                    )
-                }
-
-                if (showEmptyDataSet) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = contactListState,
+                    userScrollEnabled = isScrollEnabled,
+                ) {
                     item {
-                        EmptyDataSet(
+                        OutlinedTextField(
+                            value = queryValue,
+                            onValueChange = onQueryChanged,
                             modifier =
                                 Modifier
-                                    .fillMaxSize()
-                                    .align(alignment = Alignment.Center),
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                            placeholder = { Text("Rechercher un contact") },
+                            leadingIcon = { Icon(Icons.Outlined.Search, null) },
+                            trailingIcon = {
+                                if (queryValue.isNotEmpty()) {
+                                    IconButton(onClick = { onQueryChanged("") }) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.Clear,
+                                            contentDescription = null,
+                                            modifier = Modifier.padding(end = 16.dp),
+                                        )
+                                    }
+                                }
+                            },
+                            shape = RoundedCornerShape(50),
                         )
                     }
-                    return@LazyColumn
-                }
 
-                if (showInitialShimmers) {
-                    repeat(20) {
+                    if (showEmptyDataSet) {
                         item {
-                            ContactRowShimmer()
+                            EmptyDataSet(
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .align(alignment = Alignment.Center),
+                            )
                         }
+                        return@LazyColumn
                     }
-                    return@LazyColumn
-                }
-                items(
-                    items = contacts,
-                    key = { randomUser -> randomUser.id },
-                ) { randomUser ->
-                    ContactRow(
-                        id = randomUser.id,
-                        name = randomUser.fullName,
-                        email = randomUser.email,
-                        pictureThumbnailUrl = randomUser.pictureThumbnailUrl,
-                        sharedTransitionScope = sharedTransitionScope,
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        onClick = {
-                            onContactClick(randomUser.id)
-                        },
-                    )
-                }
 
-                if (showPaginationShimmers) {
-                    repeat(2) {
-                        item {
-                            ContactRowShimmer()
+                    if (showInitialShimmers) {
+                        repeat(20) {
+                            item {
+                                ContactRowShimmer()
+                            }
+                        }
+                        return@LazyColumn
+                    }
+                    items(
+                        items = contacts,
+                        key = { randomUser -> randomUser.id },
+                    ) { randomUser ->
+                        ContactRow(
+                            id = randomUser.id,
+                            name = randomUser.fullName,
+                            email = randomUser.email,
+                            pictureThumbnailUrl = randomUser.pictureThumbnailUrl,
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            onClick = {
+                                onContactClick(randomUser.id)
+                            },
+                        )
+                    }
+
+                    if (showPaginationShimmers) {
+                        repeat(2) {
+                            item {
+                                ContactRowShimmer()
+                            }
                         }
                     }
                 }
@@ -249,6 +262,7 @@ private fun PreviewContactScreenLoadingFirstPage() {
                 showInitialShimmers = true,
                 showPaginationShimmers = false,
                 queryValue = "",
+                connectivityState = ConnectivityUiState(),
                 sharedTransitionScope = sts,
                 animatedVisibilityScope = avs,
                 onQueryChanged = {},
@@ -280,6 +294,7 @@ private fun PreviewContactScreenWithContent() {
                 showInitialShimmers = false,
                 showPaginationShimmers = false,
                 queryValue = "",
+                connectivityState = ConnectivityUiState(),
                 sharedTransitionScope = sts,
                 animatedVisibilityScope = avs,
                 onQueryChanged = {},
@@ -304,6 +319,7 @@ private fun PreviewContactScreenLoadingNextPage() {
                 isScrollEnabled = true,
                 showInitialShimmers = false,
                 showPaginationShimmers = true,
+                connectivityState = ConnectivityUiState(),
                 queryValue = "",
                 sharedTransitionScope = sts,
                 animatedVisibilityScope = avs,

@@ -1,4 +1,6 @@
-package com.bvic.lydiacontacts.core
+package com.bvic.lydiacontacts.core.network
+
+import com.bvic.lydiacontacts.core.Error
 
 enum class NetworkError : Error {
     RequestTimeout,

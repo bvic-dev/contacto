@@ -74,7 +74,6 @@ fun HeaderHero(
             )
         }
 
-        // Scrim vertical pour lisibilité
         Box(
             Modifier
                 .matchParentSize()

@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,6 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bvic.lydiacontacts.domain.model.RandomUser
 import com.bvic.lydiacontacts.ui.contacts.components.ContactRow
 import com.bvic.lydiacontacts.ui.contacts.components.ContactRowShimmer
+import com.bvic.lydiacontacts.ui.contacts.components.EmptyDataSet
 import com.bvic.lydiacontacts.ui.shared.extension.reachedBottom
 import com.bvic.lydiacontacts.ui.shared.preview.SharedTransitionPreviewHarness
 import com.bvic.lydiacontacts.ui.shared.theme.LydiaContactsTheme
@@ -71,6 +73,7 @@ fun ContactsScreen(
         isScrollEnabled = !contactsUiState.isLoadingFirstPage,
         showInitialShimmers = contactsUiState.isLoadingFirstPage,
         showPaginationShimmers = contactsUiState.isLoadingNextPage,
+        showEmptyDataSet = contactsUiState.showEmptyDataSet,
         queryValue = contactsUiState.query,
         sharedTransitionScope = sharedTransitionScope,
         animatedVisibilityScope = animatedVisibilityScope,
@@ -102,6 +105,7 @@ fun ContactsScreen(
     showInitialShimmers: Boolean = false,
     showPaginationShimmers: Boolean = false,
     isRefreshing: Boolean = false,
+    showEmptyDataSet: Boolean = false,
     queryValue: String,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
@@ -126,7 +130,10 @@ fun ContactsScreen(
         PullToRefreshBox(
             isRefreshing = isRefreshing,
             onRefresh = onRefresh,
-            modifier = Modifier.padding(innerPadding),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -157,6 +164,19 @@ fun ContactsScreen(
                         shape = RoundedCornerShape(50),
                     )
                 }
+
+                if (showEmptyDataSet) {
+                    item {
+                        EmptyDataSet(
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .align(alignment = Alignment.Center),
+                        )
+                    }
+                    return@LazyColumn
+                }
+
                 if (showInitialShimmers) {
                     repeat(20) {
                         item {

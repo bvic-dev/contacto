@@ -16,6 +16,9 @@ data class ContactsState(
 
     val isLoadingFirstPage
         get() = loading && contacts.isEmpty()
+
+    val showEmptyDataSet
+        get() = !loading && contacts.isEmpty()
 }
 
 sealed interface ContactsAction {

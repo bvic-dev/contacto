@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ===================== App ===================== -->
+    <string name="app_name">Lydia Contact</string>
+
+    <!-- ===================== Common / Generic ===================== -->
+    <string name="ok">OK</string>
+
+    <!-- ===================== Contact detail: labels & actions ===================== -->
+    <string name="contact_detail_address">Adresse</string>
+    <string name="contact_detail_birthdate">Date de naissance</string>
+    <string name="contact_detail_call">Appeler</string>
+    <string name="contact_detail_email">E-mail</string>
+    <string name="contact_detail_email_action">E-mail</string>
+    <string name="contact_detail_favorites">Favoris</string>
+    <string name="contact_detail_message">Message</string>
+    <string name="contact_detail_phone">Téléphone</string>
+
+    <!-- ===================== Contact detail: content descriptions ===================== -->
+    <string name="contact_detail_contact_photo">Photo du contact</string>
+    <string name="contact_detail_photo_of">Photo de %1$s</string>
+
+    <!-- ===================== Contacts list / Search ===================== -->
+    <string name="contact_name_undefined">Inconnu</string>
+    <string name="contacts_empty_subtitle">Tirez pour actualiser ou affinez votre recherche.</string>
+    <string name="contacts_empty_title">Aucun contact</string>
+    <string name="contacts_search_placeholder">Rechercher des contacts</string>
+    <string name="contacts_title">Contacts</string>
+
+    <!-- ===================== Accessibility (global) ===================== -->
+    <string name="a11y_back">Retour</string>
+    <string name="a11y_call_name">Appeler %1$s</string>
+    <string name="a11y_email_name">Email %1$s</string>
+    <string name="a11y_clear_query">Effacer la recherche</string>
+    <string name="a11y_copy_to_clipboard">Appuyez pour copier</string>
+    <string name="a11y_open_address_in_maps">Ouvrir l’adresse dans Maps</string>
+    <string name="a11y_open_contact_details">Ouvrir les détails du contact</string>
+    <string name="a11y_open_contact_details_name">Ouvrir les détails de %1$s</string>
+    <string name="a11y_search_field">Champ de recherche de contacts</string>
+
+    <!-- ===================== Connectivity banner ===================== -->
+    <string name="a11y_connectivity_back_online_announce">Vous êtes de nouveau en ligne</string>
+    <string name="a11y_connectivity_offline_announce">Vous êtes hors ligne</string>
+    <string name="connectivity_back_online">De retour en ligne</string>
+    <string name="connectivity_offline">Mode hors ligne</string>
+
+    <!-- ===================== Errors ===================== -->
+    <string name="error_generic">Une erreur est survenue. Veuillez réessayer.</string>
+    <string name="error_no_internet">Pas de connexion Internet.</string>
+    <string name="error_not_found">Ressource introuvable.</string>
+    <string name="error_request_timeout">La requête a expiré. Veuillez réessayer.</string>
+    <string name="error_serialization">Erreur de données. Veuillez réessayer.</string>
+    <string name="error_server">Erreur serveur. Veuillez réessayer plus tard.</string>
+    <string name="error_unauthorized">Non autorisé. Veuillez vous reconnecter.</string>
+    <string name="error_unknown">Erreur inattendue. Veuillez réessayer.</string>
+
+    <!-- ===================== Plurals ===================== -->
+    <plurals name="age_years">
+        <item quantity="one">%d an</item>
+        <item quantity="other">%d ans</item>
+        <item quantity="many">%d ans</item>
+    </plurals>
+</resources>

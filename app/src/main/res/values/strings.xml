@@ -30,6 +30,7 @@
     <!-- ===================== Accessibility (global) ===================== -->
     <string name="a11y_back">Go back</string>
     <string name="a11y_call_name">Call %1$s</string>
+    <string name="a11y_email_name">Email %1$s</string>
     <string name="a11y_clear_query">Clear query</string>
     <string name="a11y_copy_to_clipboard">Tap to copy</string>
     <string name="a11y_open_address_in_maps">Open address in Maps</string>

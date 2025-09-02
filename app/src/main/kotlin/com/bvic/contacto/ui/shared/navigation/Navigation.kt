@@ -2,6 +2,7 @@ package com.bvic.contacto.ui.shared.navigation
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
@@ -22,11 +23,7 @@ fun Navigation(
                         navigationAction.navOptions(this)
                     }
                 } catch (e: Exception) {
-                    /*
-                    Todo : Log
-                    Firebase.crashlytics.log("Navigate")
-                    Firebase.crashlytics.recordException(e)
-                     */
+                    Log.d("Navigation", "Navigation Exception: ${e.localizedMessage}")
                 }
             }
 
@@ -34,12 +31,7 @@ fun Navigation(
                 try {
                     navController.popBackStack()
                 } catch (e: Exception) {
-                    /*
-                    Todo : Log
-                    Firebase.crashlytics.log("Pop back stack")
-                    Firebase.crashlytics.recordException(e)
-
-                     */
+                    Log.d("Navigation", "Navigation Exception: ${e.localizedMessage}")
                 }
             }
 
@@ -56,11 +48,7 @@ fun Navigation(
                     mapIntent.setPackage("com.google.android.apps.maps")
                     context.startActivity(mapIntent)
                 } catch (e: Exception) {
-                    /*
-                    Todo : Log
-                    Firebase.crashlytics.log("uriHandler openUri")
-                    Firebase.crashlytics.recordException(e)
-                     */
+                    Log.d("Navigation", "Navigation Exception: ${e.localizedMessage}")
                 }
             }
 
@@ -70,11 +58,7 @@ fun Navigation(
                     intent.data = "smsto: ${navigationAction.phoneNumber}".toUri()
                     context.startActivity(intent)
                 } catch (e: Exception) {
-                    /*
-                    Todo : Log
-                    Firebase.crashlytics.log("uriHandler openUri")
-                    Firebase.crashlytics.recordException(e)
-                     */
+                    Log.d("Navigation", "Navigation Exception: ${e.localizedMessage}")
                 }
             }
 
@@ -84,11 +68,7 @@ fun Navigation(
                     intent.data = "tel:${navigationAction.phoneNumber}".toUri()
                     context.startActivity(intent)
                 } catch (e: Exception) {
-                    /*
-                    Todo : Log
-                    Firebase.crashlytics.log("uriHandler openUri")
-                    Firebase.crashlytics.recordException(e)
-                     */
+                    Log.d("Navigation", "Navigation Exception: ${e.localizedMessage}")
                 }
             }
 
@@ -98,11 +78,7 @@ fun Navigation(
                     intent.data = "mailto:${navigationAction.email}".toUri()
                     context.startActivity(intent)
                 } catch (e: Exception) {
-                    /*
-                    Todo : Log
-                    Firebase.crashlytics.log("uriHandler openUri")
-                    Firebase.crashlytics.recordException(e)
-                     */
+                    Log.d("Navigation", "Navigation Exception: ${e.localizedMessage}")
                 }
             }
 

@@ -19,6 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "LydiaContacts"
+rootProject.name = "Contacto"
 include(":app")
- 

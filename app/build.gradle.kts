@@ -11,11 +11,11 @@ plugins {
 }
 
 android {
-    namespace = "com.bvic.lydiacontacts"
+    namespace = "com.bvic.contacto"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.bvic.lydiacontacts"
+        applicationId = "com.bvic.contacto"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

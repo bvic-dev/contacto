@@ -1,3 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LydiaContacts</string>
+    <string name="app_name">Lydia Contacts</string>
+    <string name="error_generic">Une erreur est survenue. Réessaie.</string>
+    <string name="error_request_timeout">Le serveur met trop de temps à répondre.</string>
+    <string name="error_unauthorized">Action non autorisée.</string>
+    <string name="error_no_internet">Pas de connexion internet.</string>
+    <string name="error_not_found">Ressource introuvable.</string>
+    <string name="error_server">Erreur serveur. Réessaie plus tard.</string>
+    <string name="error_serialization">Données invalides.</string>
+    <string name="error_unknown">Erreur inconnue.</string>
 </resources>

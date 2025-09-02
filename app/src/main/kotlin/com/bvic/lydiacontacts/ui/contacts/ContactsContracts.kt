@@ -8,7 +8,6 @@ data class ContactsState(
     val isRefreshing: Boolean = false,
     val isLoadingFirstPage: Boolean = false,
     val loading: Boolean = false,
-    val error: Error? = null,
     val endReached: Boolean = false,
     val query: String = "",
 ) {
@@ -34,7 +33,7 @@ sealed interface ContactsAction {
 }
 
 sealed interface ContactsEffect {
-    data class ShowMessage(
-        val message: String,
+    data class ShowError(
+        val error: Error,
     ) : ContactsEffect
 }

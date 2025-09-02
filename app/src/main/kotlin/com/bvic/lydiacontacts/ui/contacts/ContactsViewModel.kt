@@ -3,6 +3,7 @@ package com.bvic.lydiacontacts.ui.contacts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bvic.lydiacontacts.core.Result
+import com.bvic.lydiacontacts.core.network.NetworkError
 import com.bvic.lydiacontacts.domain.usecase.GetContactsUseCase
 import com.bvic.lydiacontacts.domain.usecase.SearchContactsUseCase
 import com.bvic.lydiacontacts.ui.shared.navigation.Navigator
@@ -61,8 +62,8 @@ class ContactsViewModel
                         is ContactsAction.PullToRefresh -> handleListPullToRefresh()
                     }
                 }.catch { e ->
-                    // TODO error
-                    // emit(ContactsPartial.Failed(e))
+                    _effects.tryEmit(ContactsEffect.ShowError(NetworkError.Unknown))
+                    emit(ContactsPartial.Failed(NetworkError.Unknown))
                 }
 
         val contactsUiState: StateFlow<ContactsState> =
@@ -90,7 +91,10 @@ class ContactsViewModel
                                         res.data,
                                     )
 
-                                is Result.Error -> ContactsPartial.Failed(res.error)
+                                is Result.Error -> {
+                                    _effects.tryEmit(ContactsEffect.ShowError(res.error))
+                                    ContactsPartial.Failed(res.error)
+                                }
                             }
                         },
                     )
@@ -100,7 +104,10 @@ class ContactsViewModel
                             when (res) {
                                 is Result.Loading -> ContactsPartial.Loading
                                 is Result.Success -> ContactsPartial.SearchLoaded(res.data)
-                                is Result.Error -> ContactsPartial.Failed(res.error)
+                                is Result.Error -> {
+                                    _effects.tryEmit(ContactsEffect.ShowError(res.error))
+                                    ContactsPartial.Failed(res.error)
+                                }
                             }
                         },
                     )
@@ -120,7 +127,10 @@ class ContactsViewModel
                                 is Result.Success ->
                                     ContactsPartial.PageLoaded(pageRequests.value, res.data)
 
-                                is Result.Error -> ContactsPartial.Failed(res.error)
+                                is Result.Error -> {
+                                    _effects.tryEmit(ContactsEffect.ShowError(res.error))
+                                    ContactsPartial.Failed(res.error)
+                                }
                             }
                         },
                     )
@@ -150,7 +160,10 @@ class ContactsViewModel
                             is Result.Success ->
                                 ContactsPartial.PageLoaded(pageRequests.value, res.data)
 
-                            is Result.Error -> ContactsPartial.Failed(res.error)
+                            is Result.Error -> {
+                                _effects.tryEmit(ContactsEffect.ShowError(res.error))
+                                ContactsPartial.Failed(res.error)
+                            }
                         }
                     },
                 )

@@ -6,7 +6,6 @@ import com.bvic.lydiacontacts.domain.model.RandomUser
 data class ContactDetailState(
     val contact: RandomUser? = null,
     val loading: Boolean = false,
-    val error: Error? = null,
 )
 
 sealed interface ContactDetailAction {
@@ -22,7 +21,7 @@ sealed interface ContactDetailAction {
 }
 
 sealed interface ContactDetailEffect {
-    data class ShowMessage(
-        val message: String,
+    data class ShowError(
+        val error: Error,
     ) : ContactDetailEffect
 }

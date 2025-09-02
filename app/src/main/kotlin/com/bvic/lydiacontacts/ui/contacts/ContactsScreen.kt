@@ -21,12 +21,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,9 +48,12 @@ import com.bvic.lydiacontacts.ui.shared.connectivity.ConnectivityUiState
 import com.bvic.lydiacontacts.ui.shared.connectivity.ConnectivityViewModel
 import com.bvic.lydiacontacts.ui.shared.extension.reachedBottom
 import com.bvic.lydiacontacts.ui.shared.preview.SharedTransitionPreviewHarness
+import com.bvic.lydiacontacts.ui.shared.snackbar.CollectErrors
+import com.bvic.lydiacontacts.ui.shared.snackbar.ErrorSnackbar
 import com.bvic.lydiacontacts.ui.shared.theme.LydiaContactsTheme
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -59,6 +65,8 @@ fun ContactsScreen(
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+
     val contactsUiState by contactsViewModel.contactsUiState.collectAsStateWithLifecycle()
     val contactListState = rememberLazyListState()
 
@@ -73,6 +81,14 @@ fun ContactsScreen(
             }
     }
 
+    CollectErrors(
+        errors =
+            remember(contactsViewModel.effects) {
+                contactsViewModel.effects.map { (it as? ContactsEffect.ShowError)?.error }
+            },
+        host = snackbarHostState,
+    )
+
     ContactsScreen(
         contactListState = contactListState,
         contacts = contactsUiState.contacts,
@@ -82,6 +98,7 @@ fun ContactsScreen(
         showPaginationShimmers = contactsUiState.isLoadingNextPage,
         showEmptyDataSet = contactsUiState.showEmptyDataSet,
         queryValue = contactsUiState.query,
+        snackbarHostState = snackbarHostState,
         connectivityState = connectivityState,
         sharedTransitionScope = sharedTransitionScope,
         animatedVisibilityScope = animatedVisibilityScope,
@@ -115,6 +132,7 @@ fun ContactsScreen(
     isRefreshing: Boolean = false,
     showEmptyDataSet: Boolean = false,
     queryValue: String,
+    snackbarHostState: SnackbarHostState,
     connectivityState: ConnectivityUiState,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
@@ -131,6 +149,16 @@ fun ContactsScreen(
                         text = "Contacts",
                         fontSize = 35.sp,
                         fontWeight = FontWeight.SemiBold,
+                    )
+                },
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                snackbar = {
+                    ErrorSnackbar(
+                        data = it,
                     )
                 },
             )
@@ -262,6 +290,7 @@ private fun PreviewContactScreenLoadingFirstPage() {
                 showInitialShimmers = true,
                 showPaginationShimmers = false,
                 queryValue = "",
+                snackbarHostState = remember { SnackbarHostState() },
                 connectivityState = ConnectivityUiState(),
                 sharedTransitionScope = sts,
                 animatedVisibilityScope = avs,
@@ -294,6 +323,7 @@ private fun PreviewContactScreenWithContent() {
                 showInitialShimmers = false,
                 showPaginationShimmers = false,
                 queryValue = "",
+                snackbarHostState = remember { SnackbarHostState() },
                 connectivityState = ConnectivityUiState(),
                 sharedTransitionScope = sts,
                 animatedVisibilityScope = avs,
@@ -321,6 +351,7 @@ private fun PreviewContactScreenLoadingNextPage() {
                 showPaginationShimmers = true,
                 connectivityState = ConnectivityUiState(),
                 queryValue = "",
+                snackbarHostState = remember { SnackbarHostState() },
                 sharedTransitionScope = sts,
                 animatedVisibilityScope = avs,
                 onQueryChanged = {},

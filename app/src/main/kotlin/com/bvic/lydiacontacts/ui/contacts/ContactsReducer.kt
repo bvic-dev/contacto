@@ -35,7 +35,6 @@ internal fun reduce(
             prev.copy(
                 loading = true,
                 isLoadingFirstPage = prev.isLoadingFirstPage || prev.contacts.isEmpty(),
-                error = null,
             )
 
         is ContactsPartial.PageLoaded -> {
@@ -46,7 +45,6 @@ internal fun reduce(
                 loading = false,
                 isLoadingFirstPage = false,
                 isRefreshing = false,
-                error = null,
                 endReached = change.data.isEmpty() || change.data.size < DEFAULT_PAGE_SIZE,
             )
         }
@@ -56,7 +54,6 @@ internal fun reduce(
                 isRefreshing = false,
                 loading = false,
                 isLoadingFirstPage = false,
-                error = change.error,
                 endReached = true,
             )
 

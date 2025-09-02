@@ -21,9 +21,12 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +43,10 @@ import com.bvic.lydiacontacts.ui.contactDetail.components.HeaderTexts
 import com.bvic.lydiacontacts.ui.contactDetail.components.InfoCard
 import com.bvic.lydiacontacts.ui.contactDetail.components.QuickActions
 import com.bvic.lydiacontacts.ui.shared.preview.SharedTransitionPreviewHarness
+import com.bvic.lydiacontacts.ui.shared.snackbar.CollectErrors
+import com.bvic.lydiacontacts.ui.shared.snackbar.ErrorSnackbar
 import com.bvic.lydiacontacts.ui.shared.theme.LydiaContactsTheme
+import kotlinx.coroutines.flow.map
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.char
@@ -54,7 +60,17 @@ fun ContactDetailScreen(
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+
     val state by contactDetailViewModel.contactsUiState.collectAsStateWithLifecycle()
+
+    CollectErrors(
+        errors =
+            remember(contactDetailViewModel.effects) {
+                contactDetailViewModel.effects.map { (it as? ContactDetailEffect.ShowError)?.error }
+            },
+        host = snackbarHostState,
+    )
     state.contact?.let { contact ->
         ContactDetailScreen(
             modifier = modifier,
@@ -80,6 +96,7 @@ fun ContactDetailScreen(
                 },
             sharedTransitionScope = sharedTransitionScope,
             animatedVisibilityScope = animatedVisibilityScope,
+            snackbarHostState = snackbarHostState,
             onClickBack = {
                 contactDetailViewModel.submitAction(ContactDetailAction.BackClicked)
             },
@@ -117,6 +134,7 @@ fun ContactDetailScreen(
     birthDate: String?,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
+    snackbarHostState: SnackbarHostState,
     onClickBack: () -> Unit,
     onClickMessage: () -> Unit,
     onClickFavorite: () -> Unit,
@@ -129,6 +147,16 @@ fun ContactDetailScreen(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                snackbar = {
+                    ErrorSnackbar(
+                        data = it,
+                    )
+                },
+            )
+        },
     ) { innerPadding ->
         Box(Modifier.fillMaxSize()) {
             HeaderHero(
@@ -241,6 +269,7 @@ private fun PreviewContactDetailLight(
                 birthDate = data.birthDate,
                 sharedTransitionScope = sts,
                 animatedVisibilityScope = avs,
+                snackbarHostState = remember { SnackbarHostState() },
                 onClickBack = {},
                 onClickMessage = {},
                 onClickFavorite = {},
@@ -274,6 +303,7 @@ private fun PreviewContactDetailDark(
                 email = data.email,
                 address = data.address,
                 birthDate = data.birthDate,
+                snackbarHostState = remember { SnackbarHostState() },
                 sharedTransitionScope = sts,
                 animatedVisibilityScope = avs,
                 onClickBack = {},

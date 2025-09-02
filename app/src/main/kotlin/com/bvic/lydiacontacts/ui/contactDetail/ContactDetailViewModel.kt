@@ -44,7 +44,10 @@ class ContactDetailViewModel
             getContactUseCase(contactId)
                 .map {
                     when (it) {
-                        is Result.Error -> ContactDetailPartial.Failed(it.error)
+                        is Result.Error -> {
+                            _effects.emit(ContactDetailEffect.ShowError(it.error))
+                            ContactDetailPartial.Failed(it.error)
+                        }
                         is Result.Loading -> ContactDetailPartial.Loading
                         is Result.Success -> ContactDetailPartial.ContactLoaded(it.data)
                     }

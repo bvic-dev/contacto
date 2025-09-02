@@ -6,6 +6,7 @@ import com.bvic.lydiacontacts.domain.model.RandomUser
 data class ContactsState(
     val contacts: List<RandomUser> = emptyList(),
     val isRefreshing: Boolean = false,
+    val isLoadingFirstPage: Boolean = false,
     val loading: Boolean = false,
     val error: Error? = null,
     val endReached: Boolean = false,
@@ -13,9 +14,6 @@ data class ContactsState(
 ) {
     val isLoadingNextPage
         get() = loading && contacts.isNotEmpty()
-
-    val isLoadingFirstPage
-        get() = loading && contacts.isEmpty()
 
     val showEmptyDataSet
         get() = !loading && contacts.isEmpty()

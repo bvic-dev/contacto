@@ -31,13 +31,20 @@ internal fun reduce(
     change: ContactsPartial,
 ): ContactsState =
     when (change) {
-        is ContactsPartial.Loading -> prev.copy(loading = true, error = null)
+        is ContactsPartial.Loading ->
+            prev.copy(
+                loading = true,
+                isLoadingFirstPage = prev.isLoadingFirstPage || prev.contacts.isEmpty(),
+                error = null,
+            )
+
         is ContactsPartial.PageLoaded -> {
             val fresh = change.page == 1
             val merged = if (fresh) change.data else prev.contacts + change.data
             prev.copy(
                 contacts = merged,
                 loading = false,
+                isLoadingFirstPage = false,
                 isRefreshing = false,
                 error = null,
                 endReached = change.data.isEmpty() || change.data.size < DEFAULT_PAGE_SIZE,
@@ -48,6 +55,7 @@ internal fun reduce(
             prev.copy(
                 isRefreshing = false,
                 loading = false,
+                isLoadingFirstPage = false,
                 error = change.error,
                 endReached = true,
             )
@@ -59,12 +67,13 @@ internal fun reduce(
                 contacts = change.data,
                 loading = false,
                 isRefreshing = false,
+                isLoadingFirstPage = false,
             )
 
         ContactsPartial.Refreshing ->
             prev.copy(
-                contacts = emptyList(),
                 isRefreshing = true,
+                isLoadingFirstPage = true,
                 endReached = false,
             )
     }

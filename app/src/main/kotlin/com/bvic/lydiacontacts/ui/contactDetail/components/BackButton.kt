@@ -10,14 +10,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.bvic.lydiacontacts.R
 
 @Composable
 fun BackButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     icon: ImageVector,
-    contentDesc: String,
 ) {
     IconButton(
         onClick = onClick,
@@ -27,6 +28,6 @@ fun BackButton(
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.6f)),
     ) {
-        Icon(icon, contentDescription = contentDesc)
+        Icon(icon, contentDescription = stringResource(R.string.a11y_back))
     }
 }

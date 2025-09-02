@@ -33,12 +33,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bvic.lydiacontacts.R
 import com.bvic.lydiacontacts.domain.model.RandomUser
 import com.bvic.lydiacontacts.ui.contacts.components.ContactRow
 import com.bvic.lydiacontacts.ui.contacts.components.ContactRowShimmer
@@ -146,7 +150,7 @@ fun ContactsScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Contacts",
+                        text = stringResource(R.string.contacts_title),
                         fontSize = 35.sp,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -181,21 +185,26 @@ fun ContactsScreen(
                     userScrollEnabled = isScrollEnabled,
                 ) {
                     item {
+                        val contentDescriptionSearch = stringResource(R.string.a11y_search_field)
+
                         OutlinedTextField(
                             value = queryValue,
                             onValueChange = onQueryChanged,
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .padding(16.dp),
-                            placeholder = { Text("Rechercher un contact") },
+                                    .padding(16.dp)
+                                    .semantics {
+                                        contentDescription = contentDescriptionSearch
+                                    },
+                            placeholder = { Text(stringResource(R.string.contacts_search_placeholder)) },
                             leadingIcon = { Icon(Icons.Outlined.Search, null) },
                             trailingIcon = {
                                 if (queryValue.isNotEmpty()) {
                                     IconButton(onClick = { onQueryChanged("") }) {
                                         Icon(
                                             imageVector = Icons.Outlined.Clear,
-                                            contentDescription = null,
+                                            contentDescription = stringResource(R.string.a11y_clear_query),
                                             modifier = Modifier.padding(end = 16.dp),
                                         )
                                     }

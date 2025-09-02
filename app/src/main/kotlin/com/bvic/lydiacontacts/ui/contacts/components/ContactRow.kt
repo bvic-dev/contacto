@@ -24,9 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.hideFromAccessibility
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
+import com.bvic.lydiacontacts.R
 import com.bvic.lydiacontacts.ui.shared.components.LydiaContactsLoader
 import com.bvic.lydiacontacts.ui.shared.extension.shimmerBackground
 import com.bvic.lydiacontacts.ui.shared.preview.SharedTransitionPreviewHarness
@@ -43,12 +48,22 @@ fun ContactRow(
     animatedVisibilityScope: AnimatedVisibilityScope,
     onClick: () -> Unit,
 ) {
+    val openDetailsLabel =
+        if (name.isNotBlank()) {
+            stringResource(R.string.a11y_open_contact_details_name, name)
+        } else {
+            stringResource(R.string.a11y_open_contact_details)
+        }
+
     Row(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .clickable { onClick() }
-                .padding(horizontal = 16.dp, vertical = 10.dp),
+                .clickable(
+                    onClick = onClick,
+                    onClickLabel = openDetailsLabel,
+                    role = Role.Button,
+                ).padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         with(sharedTransitionScope) {
@@ -62,12 +77,8 @@ fun ContactRow(
                             animatedVisibilityScope = animatedVisibilityScope,
                         ).size(48.dp)
                         .clip(CircleShape),
-                loading = {
-                    LydiaContactsLoader()
-                },
-                error = {
-                    EmptyPicture(name)
-                },
+                loading = { LydiaContactsLoader() },
+                error = { EmptyPicture(name) },
             )
         }
 
@@ -81,7 +92,7 @@ fun ContactRow(
                             rememberSharedContentState(key = "name-$id"),
                             animatedVisibilityScope = animatedVisibilityScope,
                         ),
-                    text = name.ifBlank { "Indéfinie" },
+                    text = name.ifBlank { stringResource(R.string.contact_name_undefined) },
                     style = MaterialTheme.typography.titleMedium,
                 )
             }
@@ -122,6 +133,7 @@ fun ContactRowShimmer() {
         modifier =
             Modifier
                 .fillMaxWidth()
+                .semantics { hideFromAccessibility() }
                 .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

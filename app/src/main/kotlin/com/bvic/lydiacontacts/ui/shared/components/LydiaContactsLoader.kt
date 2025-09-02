@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.hideFromAccessibility
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
@@ -25,7 +27,7 @@ fun LydiaContactsLoader(modifier: Modifier = Modifier) {
         iterations = LottieConstants.IterateForever,
     )
     LottieAnimation(
-        modifier = modifier,
+        modifier = modifier.semantics { hideFromAccessibility() },
         composition = composition,
         progress = { progress },
     )

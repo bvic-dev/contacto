@@ -24,18 +24,15 @@ internal fun reduce(
             prev.copy(
                 contact = change.data,
                 loading = false,
-                error = null,
             )
 
         is ContactDetailPartial.Failed ->
             prev.copy(
                 loading = false,
-                error = change.error,
             )
 
         is ContactDetailPartial.Loading ->
             prev.copy(
                 loading = true,
-                error = null,
             )
     }

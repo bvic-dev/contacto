@@ -17,8 +17,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.bvic.lydiacontacts.R
 
 @Composable
 fun BottomCTAs(
@@ -41,7 +43,10 @@ fun BottomCTAs(
         ) {
             Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = null)
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Message", style = MaterialTheme.typography.titleMedium)
+            Text(
+                stringResource(R.string.contact_detail_message),
+                style = MaterialTheme.typography.titleMedium,
+            )
         }
         FilledTonalButton(
             onClick = onFavorite,
@@ -53,7 +58,10 @@ fun BottomCTAs(
             Row {
                 Icon(imageVector = Icons.Default.Star, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Favoris", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    stringResource(R.string.contact_detail_favorites),
+                    style = MaterialTheme.typography.titleMedium,
+                )
             }
         }
     }

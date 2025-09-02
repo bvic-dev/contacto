@@ -20,8 +20,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.bvic.lydiacontacts.R
 import com.bvic.lydiacontacts.ui.shared.theme.LydiaContactsTheme
 
 @Composable
@@ -66,15 +69,34 @@ fun ConnectivityBanner(
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .fillMaxWidth(),
             ) {
+                val a11yConnectivityOffline =
+                    stringResource(R.string.a11y_connectivity_offline_announce)
+                val a11yConnectivityOnline =
+                    stringResource(R.string.a11y_connectivity_back_online_announce)
+
                 Icon(
                     imageVector = if (isOffline) Icons.Outlined.WifiOff else Icons.Outlined.Wifi,
                     contentDescription = null,
                     modifier = Modifier.size(18.dp),
                 )
                 Text(
-                    text = if (isOffline) "Mode hors ligne" else "De retour en ligne",
+                    text =
+                        if (isOffline) {
+                            stringResource(R.string.connectivity_offline)
+                        } else {
+                            stringResource(R.string.connectivity_back_online)
+                        },
                     style = MaterialTheme.typography.labelLarge,
-                    modifier = Modifier.padding(start = 8.dp),
+                    modifier =
+                        Modifier
+                            .padding(start = 8.dp)
+                            .semantics {
+                                if (isOffline) {
+                                    error(a11yConnectivityOffline)
+                                } else {
+                                    error(a11yConnectivityOnline)
+                                }
+                            },
                 )
             }
         }

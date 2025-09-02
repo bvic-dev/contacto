@@ -18,11 +18,13 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.SubcomposeAsyncImage
+import com.bvic.lydiacontacts.R
 import com.bvic.lydiacontacts.ui.shared.components.LydiaContactsLoader
 import com.bvic.lydiacontacts.ui.shared.preview.SharedTransitionPreviewHarness
 import com.bvic.lydiacontacts.ui.shared.theme.LydiaContactsTheme
@@ -36,7 +38,6 @@ fun HeaderHero(
     pictureLarge: String?,
     name: String?,
     headerHeight: Dp,
-    nameForContentDesc: String?,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
@@ -46,11 +47,13 @@ fun HeaderHero(
             .height(headerHeight),
     ) {
         with(sharedTransitionScope) {
+            val imageContentDesc =
+                name?.let { stringResource(R.string.contact_detail_photo_of, it) }
+                    ?: stringResource(R.string.contact_detail_contact_photo)
+
             SubcomposeAsyncImage(
                 model = pictureLarge,
-                contentDescription =
-                    nameForContentDesc?.let { "Photo de $it" }
-                        ?: "Photo du contact",
+                contentDescription = imageContentDesc,
                 modifier =
                     Modifier
                         .sharedBounds(
@@ -127,7 +130,6 @@ private fun PreviewHeaderTextsLight() {
                     scrollValue = 0,
                     name = "Alice Dupont",
                     headerHeight = 300.dp,
-                    nameForContentDesc = "Alice Dupont",
                     sharedTransitionScope = sts,
                     animatedVisibilityScope = avs,
                 )

@@ -29,11 +29,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bvic.lydiacontacts.R
 import com.bvic.lydiacontacts.ui.contactDetail.components.BackButton
 import com.bvic.lydiacontacts.ui.contactDetail.components.BottomCTAs
 import com.bvic.lydiacontacts.ui.contactDetail.components.ContactPreview
@@ -166,7 +168,6 @@ fun ContactDetailScreen(
                 name = name,
                 pictureLarge = pictureLarge,
                 headerHeight = 300.dp,
-                nameForContentDesc = name,
                 sharedTransitionScope = sharedTransitionScope,
                 animatedVisibilityScope = animatedVisibilityScope,
             )
@@ -205,11 +206,12 @@ fun ContactDetailScreen(
                             onCall = onClickCall,
                             onMail = onClickMail,
                             onMap = onClickMap,
+                            name = name,
                         )
 
                         Spacer(Modifier.height(12.dp))
 
-                        InfoCard(icon = Icons.Filled.Phone, title = "Téléphone", value = phone)
+                        InfoCard(icon = Icons.Filled.Phone, title = stringResource(R.string.contact_detail_phone), value = phone)
                         with(sharedTransitionScope) {
                             InfoCard(
                                 modifier =
@@ -218,12 +220,12 @@ fun ContactDetailScreen(
                                         animatedVisibilityScope = animatedVisibilityScope,
                                     ),
                                 icon = Icons.Filled.Email,
-                                title = "Email",
+                                title = stringResource(R.string.contact_detail_email),
                                 value = email,
                             )
                         }
-                        InfoCard(icon = Icons.Filled.Home, title = "Adresse", value = address)
-                        InfoCard(icon = Icons.Filled.Cake, title = "Naissance", value = birthDate)
+                        InfoCard(icon = Icons.Filled.Home, title = stringResource(R.string.contact_detail_address), value = address)
+                        InfoCard(icon = Icons.Filled.Cake, title = stringResource(R.string.contact_detail_birthdate), value = birthDate)
 
                         Spacer(Modifier.height(16.dp))
 
@@ -240,7 +242,6 @@ fun ContactDetailScreen(
                         .padding(16.dp),
                 onClick = onClickBack,
                 icon = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDesc = "Retour",
             )
         }
     }

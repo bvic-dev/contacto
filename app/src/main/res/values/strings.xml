@@ -1,12 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Lydia Contacts</string>
-    <string name="error_generic">Une erreur est survenue. Réessaie.</string>
-    <string name="error_request_timeout">Le serveur met trop de temps à répondre.</string>
-    <string name="error_unauthorized">Action non autorisée.</string>
-    <string name="error_no_internet">Pas de connexion internet.</string>
-    <string name="error_not_found">Ressource introuvable.</string>
-    <string name="error_server">Erreur serveur. Réessaie plus tard.</string>
-    <string name="error_serialization">Données invalides.</string>
-    <string name="error_unknown">Erreur inconnue.</string>
+    <!-- ===================== App ===================== -->
+    <string name="app_name">Lydia Contact</string>
+
+    <!-- ===================== Common / Generic ===================== -->
+    <string name="ok">OK</string>
+
+    <!-- ===================== Contact detail: labels & actions ===================== -->
+    <string name="contact_detail_address">Address</string>
+    <string name="contact_detail_birthdate">Date of birth</string>
+    <string name="contact_detail_call">Call</string>
+    <string name="contact_detail_email">Email</string>
+    <string name="contact_detail_email_action">Email</string>
+    <string name="contact_detail_favorites">Favorites</string>
+    <string name="contact_detail_message">Message</string>
+    <string name="contact_detail_phone">Phone</string>
+
+    <!-- ===================== Contact detail: content descriptions ===================== -->
+    <string name="contact_detail_contact_photo">Contact photo</string>
+    <string name="contact_detail_photo_of">Photo of %1$s</string>
+
+    <!-- ===================== Contacts list / Search ===================== -->
+    <string name="contact_name_undefined">Unknown</string>
+    <string name="contacts_empty_subtitle">Pull to refresh or adjust your search.</string>
+    <string name="contacts_empty_title">No contacts</string>
+    <string name="contacts_search_placeholder">Search contacts</string>
+    <string name="contacts_title">Contacts</string>
+
+    <!-- ===================== Accessibility (global) ===================== -->
+    <string name="a11y_back">Go back</string>
+    <string name="a11y_call_name">Call %1$s</string>
+    <string name="a11y_clear_query">Clear query</string>
+    <string name="a11y_copy_to_clipboard">Tap to copy</string>
+    <string name="a11y_open_address_in_maps">Open address in Maps</string>
+    <string name="a11y_open_contact_details">Open contact details</string>
+    <string name="a11y_open_contact_details_name">Open %1$s details</string>
+    <string name="a11y_search_field">Search contacts field</string>
+
+    <!-- ===================== Connectivity banner ===================== -->
+    <string name="a11y_connectivity_back_online_announce">You are back online</string>
+    <string name="a11y_connectivity_offline_announce">You are offline</string>
+    <string name="connectivity_back_online">Back online</string>
+    <string name="connectivity_offline">Offline mode</string>
+
+    <!-- ===================== Errors ===================== -->
+    <string name="error_generic">An error occurred. Please try again.</string>
+    <string name="error_no_internet">No internet connection.</string>
+    <string name="error_not_found">Resource not found.</string>
+    <string name="error_request_timeout">The request timed out. Please try again.</string>
+    <string name="error_serialization">Data error. Please try again.</string>
+    <string name="error_server">Server error. Please try again later.</string>
+    <string name="error_unauthorized">You are not authorized. Please sign in again.</string>
+    <string name="error_unknown">Unexpected error. Please try again.</string>
+
+    <!-- ===================== Plurals ===================== -->
+    <plurals name="age_years">
+        <item quantity="one">%d year</item>
+        <item quantity="other">%d years</item>
+    </plurals>
+
 </resources>

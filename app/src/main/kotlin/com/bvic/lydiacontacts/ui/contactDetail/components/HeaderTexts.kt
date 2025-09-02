@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.bvic.lydiacontacts.R
 import com.bvic.lydiacontacts.ui.shared.preview.SharedTransitionPreviewHarness
 import com.bvic.lydiacontacts.ui.shared.theme.LydiaContactsTheme
 
@@ -31,23 +34,23 @@ fun HeaderTexts(
         name?.takeIf { it.isNotBlank() }?.let {
             Text(
                 modifier =
-                    Modifier.sharedBounds(
-                        rememberSharedContentState(key = "name-$id"),
-                        animatedVisibilityScope = animatedVisibilityScope,
-                    ),
+                    Modifier
+                        .sharedBounds(
+                            rememberSharedContentState(key = "name-$id"),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                        ).semantics { heading() },
                 text = it,
                 style = MaterialTheme.typography.headlineLarge,
             )
             Spacer(Modifier.height(8.dp))
         }
     }
-
-    val subtitle =
-        remember(age, nationality) {
-            val ageText = age?.takeIf { it > 0 }?.let { "$it ans" }
-            val nationalityText = nationality?.ifBlank { null }
-            listOfNotNull(ageText, nationalityText).joinToString(" · ")
+    val ageText =
+        age?.takeIf { it > 0 }?.let {
+            pluralStringResource(R.plurals.age_years, it, it)
         }
+    val nationalityText = nationality?.ifBlank { null }
+    val subtitle = listOfNotNull(ageText, nationalityText).joinToString(" · ")
 
     if (subtitle.isNotEmpty()) {
         Text(

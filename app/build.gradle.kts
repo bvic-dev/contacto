@@ -48,12 +48,12 @@ android {
             )
             signingConfig = signingConfigs.getByName("bvic")
         }
-
         debug {
             versionNameSuffix = ".debug"
             applicationIdSuffix = ".debug"
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -72,39 +72,41 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.material.icons)
-    implementation(libs.androidx.ui.animation)
-    implementation(libs.navigation.compose)
-    implementation(libs.hilt.android)
-    implementation(libs.hilt.navigation)
-    ksp(libs.hilt.compiler)
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.logging.interceptor)
-    implementation(libs.room.runtime)
-    ksp(libs.room.compiler)
-    implementation(libs.room.ktx)
-    implementation(libs.coil)
-    implementation(libs.coil.network.okhttp)
-    implementation(libs.kotlin.date)
-    implementation(libs.lottie)
+    // AndroidX de base + Navigation, Lifecycle, Activity
+    implementation(libs.bundles.androidx.core)
 
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-    testImplementation(libs.mockk)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.junit.jupiter.api)
+    // Compose via BOM + bundle UI
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.compose)
+
+    // DI (Hilt)
+    implementation(libs.bundles.hilt)
+    ksp(libs.hilt.compiler)
+
+    // Network
+    implementation(libs.bundles.networking)
+
+    // Room (runtime + ktx) + KSP compiler
+    implementation(libs.bundles.room)
+    ksp(libs.room.compiler)
+
+    // Pictures
+    implementation(libs.bundles.coil)
+
+    // Divers (datetime, lottie)
+    implementation(libs.bundles.misc)
+
+    // Debug / tooling
+    debugImplementation(libs.bundles.compose.debug)
+
+    // Unit Test (API Jupiter + MockK + Coroutines test + Truth)
+    testImplementation(libs.bundles.test)
+    // Junit 5 engine
     testRuntimeOnly(libs.junit.jupiter.engine)
-    testImplementation(libs.google.truth)
-    androidTestImplementation(libs.junit.jupiter.api)
+
+    // Instrumentation tests
+    androidTestImplementation(libs.bundles.android.test)
+    // BOM Compose tests UI
     androidTestImplementation(platform(libs.androidx.compose.bom))
 }
 
@@ -118,4 +120,5 @@ hilt {
     enableAggregatingTask = false
 }
 
+// Lint avant la compilation
 tasks.named("preBuild") { dependsOn("ktlintCheck") }

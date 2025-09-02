@@ -68,4 +68,61 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 mannodermaus-junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "mannodermausJunit5" }
 kotlin-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kotlinKover" }
 
+[bundles]
+androidx-core = [
+    "androidx-core-ktx",
+    "androidx-lifecycle-runtime-ktx",
+    "androidx-activity-compose",
+    "navigation-compose",
+]
 
+compose = [
+    "androidx-ui",
+    "androidx-ui-graphics",
+    "androidx-ui-tooling-preview",
+    "androidx-material3",
+    "androidx-material-icons",
+    "androidx-ui-animation",
+]
+
+compose-debug = [
+    "androidx-ui-tooling",
+    "androidx-ui-test-manifest",
+]
+
+networking = [
+    "retrofit",
+    "converter-gson",
+    "logging-interceptor",
+]
+
+hilt = [
+    "hilt-android",
+    "hilt-navigation",
+]
+
+room = [
+    "room-runtime",
+    "room-ktx",
+]
+
+coil = [
+    "coil",
+    "coil-network-okhttp",
+]
+
+misc = [
+    "kotlin-date",
+    "lottie",
+]
+
+test = [
+    "mockk",
+    "kotlinx-coroutines-test",
+    "junit-jupiter-api",
+    "google-truth",
+]
+
+android-test = [
+    "junit-jupiter-api",
+]

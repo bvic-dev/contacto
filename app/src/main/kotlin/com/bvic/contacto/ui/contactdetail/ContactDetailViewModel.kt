@@ -1,13 +1,11 @@
-package com.bvic.contacto.ui.contactDetail
+package com.bvic.contacto.ui.contactdetail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.bvic.contacto.core.Result
 import com.bvic.contacto.domain.usecase.GetContactUseCase
 import com.bvic.contacto.ui.shared.navigation.Navigator
-import com.bvic.contacto.ui.shared.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,8 +24,9 @@ class ContactDetailViewModel
         savedStateHandle: SavedStateHandle,
         getContactUseCase: GetContactUseCase,
         private val navigator: Navigator,
+        contactIdDecoder: @JvmSuppressWildcards (SavedStateHandle) -> String,
     ) : ViewModel() {
-        val contactId: String = savedStateHandle.toRoute<Route.ContactDetail>().id
+        val contactId: String = contactIdDecoder(savedStateHandle)
 
         private val actions =
             MutableSharedFlow<ContactDetailAction>(
@@ -48,6 +47,7 @@ class ContactDetailViewModel
                             _effects.emit(ContactDetailEffect.ShowError(it.error))
                             ContactDetailPartial.Failed(it.error)
                         }
+
                         is Result.Loading -> ContactDetailPartial.Loading
                         is Result.Success -> ContactDetailPartial.ContactLoaded(it.data)
                     }

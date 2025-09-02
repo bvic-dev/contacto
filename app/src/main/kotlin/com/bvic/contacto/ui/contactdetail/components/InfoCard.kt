@@ -1,4 +1,4 @@
-package com.bvic.contacto.ui.contactDetail.components
+package com.bvic.contacto.ui.contactdetail.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable

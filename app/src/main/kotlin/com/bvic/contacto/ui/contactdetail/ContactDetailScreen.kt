@@ -1,4 +1,4 @@
-package com.bvic.contacto.ui.contactDetail
+package com.bvic.contacto.ui.contactdetail
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -36,14 +36,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bvic.contacto.R
-import com.bvic.contacto.ui.contactDetail.components.BackButton
-import com.bvic.contacto.ui.contactDetail.components.BottomCTAs
-import com.bvic.contacto.ui.contactDetail.components.ContactPreview
-import com.bvic.contacto.ui.contactDetail.components.ContactPreviewProvider
-import com.bvic.contacto.ui.contactDetail.components.HeaderHero
-import com.bvic.contacto.ui.contactDetail.components.HeaderTexts
-import com.bvic.contacto.ui.contactDetail.components.InfoCard
-import com.bvic.contacto.ui.contactDetail.components.QuickActions
+import com.bvic.contacto.ui.contactdetail.components.BackButton
+import com.bvic.contacto.ui.contactdetail.components.BottomCTAs
+import com.bvic.contacto.ui.contactdetail.components.ContactPreview
+import com.bvic.contacto.ui.contactdetail.components.ContactPreviewProvider
+import com.bvic.contacto.ui.contactdetail.components.HeaderHero
+import com.bvic.contacto.ui.contactdetail.components.HeaderTexts
+import com.bvic.contacto.ui.contactdetail.components.InfoCard
+import com.bvic.contacto.ui.contactdetail.components.QuickActions
 import com.bvic.contacto.ui.shared.preview.SharedTransitionPreviewHarness
 import com.bvic.contacto.ui.shared.snackbar.CollectErrors
 import com.bvic.contacto.ui.shared.snackbar.ErrorSnackbar

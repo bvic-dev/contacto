@@ -1,4 +1,4 @@
-package com.bvic.contacto.ui.contactDetail.components
+package com.bvic.contacto.ui.contactdetail.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding

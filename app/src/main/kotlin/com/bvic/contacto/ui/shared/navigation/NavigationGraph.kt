@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.bvic.contacto.ui.contactDetail.ContactDetailScreen
+import com.bvic.contacto.ui.contactdetail.ContactDetailScreen
 import com.bvic.contacto.ui.contacts.ContactsScreen
 
 @OptIn(ExperimentalSharedTransitionApi::class)

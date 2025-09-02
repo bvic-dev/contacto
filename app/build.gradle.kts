@@ -9,12 +9,14 @@ plugins {
     alias(libs.plugins.hilt.plugin)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.mannodermaus.junit5)
 }
 
 android {
     signingConfigs {
         create("bvic") {
-            storeFile = file(gradleLocalProperties(rootDir, providers).getProperty("STORE_FILE_PATH"))
+            storeFile =
+                file(gradleLocalProperties(rootDir, providers).getProperty("STORE_FILE_PATH"))
             storePassword = gradleLocalProperties(rootDir, providers).getProperty("STORE_PASSWORD")
             keyPassword = gradleLocalProperties(rootDir, providers).getProperty("STORE_PASSWORD")
             keyAlias = gradleLocalProperties(rootDir, providers).getProperty("STORE_KEY")
@@ -94,13 +96,15 @@ dependencies {
     implementation(libs.kotlin.date)
     implementation(libs.lottie)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    testImplementation(libs.google.truth)
+    androidTestImplementation(libs.junit.jupiter.api)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
 }
 
 ktlint {

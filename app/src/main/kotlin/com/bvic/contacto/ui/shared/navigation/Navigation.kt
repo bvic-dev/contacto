@@ -55,7 +55,7 @@ fun Navigation(
             is NavigationAction.OpenSmsApp -> {
                 try {
                     val intent = Intent(Intent.ACTION_VIEW)
-                    intent.data = "smsto: ${navigationAction.phoneNumber}".toUri()
+                    intent.data = "smsto:${navigationAction.phoneNumber}".toUri()
                     context.startActivity(intent)
                 } catch (e: Exception) {
                     Log.d("Navigation", "Navigation Exception: ${e.localizedMessage}")

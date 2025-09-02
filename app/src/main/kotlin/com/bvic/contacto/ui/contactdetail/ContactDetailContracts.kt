@@ -1,4 +1,4 @@
-package com.bvic.contacto.ui.contactDetail
+package com.bvic.contacto.ui.contactdetail
 
 import com.bvic.contacto.core.Error
 import com.bvic.contacto.domain.model.RandomUser

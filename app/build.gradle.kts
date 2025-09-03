@@ -16,11 +16,18 @@ plugins {
 android {
     signingConfigs {
         create("bvic") {
-            storeFile =
-                file(gradleLocalProperties(rootDir, providers).getProperty("STORE_FILE_PATH"))
-            storePassword = gradleLocalProperties(rootDir, providers).getProperty("STORE_PASSWORD")
-            keyPassword = gradleLocalProperties(rootDir, providers).getProperty("STORE_PASSWORD")
-            keyAlias = gradleLocalProperties(rootDir, providers).getProperty("STORE_KEY")
+            val props = gradleLocalProperties(rootDir, providers)
+            val storeFilePath = props.getProperty("STORE_FILE_PATH")
+            val storePassword = props.getProperty("STORE_PASSWORD")
+            val keyPassword = props.getProperty("STORE_PASSWORD")
+            val keyAlias = props.getProperty("STORE_KEY")
+
+            if (storeFilePath != null && storePassword != null && keyAlias != null) {
+                storeFile = file(storeFilePath)
+                this.storePassword = storePassword
+                this.keyPassword = keyPassword
+                this.keyAlias = keyAlias
+            }
         }
     }
 
